@@ -24,6 +24,7 @@ from suitable import Api
 from getpass import getpass
 
 from PyQt5 import Qt, QtWidgets, QtCore, QtGui, QtWebEngine, QtWebEngineWidgets, QtWebEngineWidgets
+from PyQt5.QtCore import QObject, pyqtSlot
 
 class Worker(QtCore.QRunnable):
     '''
@@ -45,7 +46,7 @@ class Worker(QtCore.QRunnable):
         self.args = args
         self.kwargs = kwargs
 
-    #@pyqtSlot()
+    @pyqtSlot()
     def run(self):
         '''
         Initialise the runner function with passed args, kwargs.
@@ -114,15 +115,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #Radar Parameters
         self.start_time = 0
-        self.pri = 0
+        self.pri = []
         self.num_pri = 0
-        self.bands = ''
-        self.pols = ''
+        self.bands = []
+        self.pols = []
+        self.pulse_width = []
 
         #Start the Threadpool
         self.threadpool = QtCore.QThreadPool()
         print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
-
 
         layout = QtWidgets.QGridLayout()
 
@@ -143,6 +144,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.node_two = QtWidgets.QLabel('Node 2')
         self.lbl_cnc = QtWidgets.QLabel('CNC')
         self.lbl_ntp = QtWidgets.QLabel('NTP')
+        # - Pulse Parameters
+        self.lbl_rt = QtWidgets.QLabel('Length: ' + str(self.time_remaining) + 's')
+        self.lbl_fc = QtWidgets.QLabel('Freq: ' + str(self.bands))
+        self.lbl_pw = QtWidgets.QLabel('PW: ' + str(self.pulse_width))
+        self.lbl_pol = QtWidgets.QLabel('Pols: ' + str(self.pols))
+        self.lbl_pri = QtWidgets.QLabel('PRI: ' + str(self.pri))
 
         #Pushbuttons
         self.run_button = QtWidgets.QPushButton('Run')
@@ -189,6 +196,11 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addWidget(self.run_button,2,0)
         layout.addWidget(self.abort_button,3,0)
         layout.addWidget(self.pulses_button,4,0)
+        layout.addWidget(self.lbl_rt,5,0)
+        layout.addWidget(self.lbl_fc,6,0)
+        layout.addWidget(self.lbl_pri,7,0)
+        layout.addWidget(self.lbl_pw,8,0)
+        layout.addWidget(self.lbl_pol,9,0)
 
         layout.addWidget(self.lbl_experi_name,1,1)
         layout.addWidget(self.experiment_name_edit,1,2)
@@ -225,12 +237,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         w = QtWidgets.QWidget()
         w.setLayout(layout)
-
+        self.init_nextheader_values()
         state_update = Worker(self.check_state)
         self.threadpool.start(state_update)
 
         self.setCentralWidget(w)
-        self.init_nextheader_values()
         self.init_map()
         self.target_details.setText(self.target_latlong)
         self.experiment_name_edit.setText(self.experiment_name)
@@ -254,12 +265,32 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.num_pri = int(config.get('PulseParameters','num_pris'))
         self.pulses = config.get('PulseParameters','pulses')
-        pulses = self.pulses.split(',')
-        self.pri = float(pulses[1])
-        self.time_remaining = self.pri*self.num_pri #In microseconds
-        self.pols = int(pulses[2])
-        self.bands = float(pulses[3].replace('\"',''))
-        self.pulse_width = float(pulses[0].replace('\"',''))
+        self.pri = []
+        self.bands = []
+        self.pols = []
+        self.pulse_width = []
+
+        pulses = []
+        pulses_arr = self.pulses.split('|')
+
+        for pulse in range(len(pulses_arr)):
+            pulses_arr[pulse]=pulses_arr[pulse].replace('\"','')
+            print(pulse)
+            pulses.append(pulses_arr[pulse].split(','))
+            print(pulses[pulse])
+            self.pri.append(float(pulses[pulse][1]))
+            self.pols.append(int(pulses[pulse][2]))
+            self.bands.append(float(pulses[pulse][3].replace('\"','')))
+            self.pulse_width.append(float(pulses[pulse][0].replace('\"','')))
+
+        self.time_remaining = self.pri[0]*self.num_pri #In microseconds
+
+        self.lbl_fc.setText('Freq: ' + str(self.bands))
+        self.lbl_rt.setText('Length: ' + str(self.time_remaining/1000000) + 's')
+        self.lbl_pw.setText('PW: ' + str(self.pulse_width))
+        self.lbl_pol.setText('Pols: ' + str(self.pols))
+        self.lbl_pri.setText('PRI: ' + str(self.pri))
+
 
     def init_map(self):
         self.update_map('var n0 = ','var n0 = [' + self.node_0_latlong + '];\n')
@@ -699,22 +730,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.init_nextheader_values()
 
 
-#if __name__ == '_main__':
-#     class MapViewer(QtWebEngine):
-#         def __init__(self, *args, **kwargs):
-#             super().__init__(*args,**kwargs)
-
-#             self.node_1_latlong = [0,0]
-#             self.node_2_latlong = [0,0]
-#             self.node_0_latlong = [0,0]
-#             view = QtWebEngineWidgets.QWebEngineView()
-
-# # load .html file
-#             view.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
-
-#             layout.addWidget(view)
-
 app = QtWidgets.QApplication([])
 window = MainWindow()
-#window2 = 
+window.setWindowIcon(QtGui.QIcon('icon.png'))
 app.exec_()
