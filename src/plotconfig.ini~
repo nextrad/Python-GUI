@@ -4,9 +4,9 @@ NUM_PRIS = 1000
 
 [DIRECTS]
 
-NODE_0_IMG = /home/si/Documents/git/Python-GUI/src/quickview_images/
-NODE_1_IMG = /home/si/Documents/git/Python-GUI/src/quickview_images/
-NODE_2_IMG = /home/si/Documents/git/Python-GUI/src/quickview_images/
+NODE_0_IMG = /home/si/Dropbox/PyProjects/Update_Plot/nextlookdirs/img
+NODE_1_IMG = /home/si/Dropbox/PyProjects/Update_Plot/nextlookdirs/img
+NODE_2_IMG = /home/si/Dropbox/PyProjects/Update_Plot/nextlookdirs/img
 
 [IMAGES]
 

@@ -6,6 +6,7 @@ import signal
 import time
 import os
 import configparser
+from configobj import ConfigObj
 from subprocess import call
 import logging
 from watchdog.observers import Observer
@@ -16,7 +17,7 @@ import sys, getopt
 import subprocess
 import ast
 import re
-from shutil import copyfile
+from shutil import copyfile, copy
 from suitable import Api
 from getpass import getpass
 
@@ -24,7 +25,7 @@ from suitable import Api
 from getpass import getpass
 
 from PyQt5 import Qt, QtWidgets, QtCore, QtGui, QtWebEngine, QtWebEngineWidgets, QtWebEngineWidgets
-from PyQt5.QtCore import QObject, pyqtSlot
+from PyQt5.QtCore import pyqtSlot
 
 class Worker(QtCore.QRunnable):
     '''
@@ -63,7 +64,8 @@ class MainWindow(QtWidgets.QMainWindow):
         super(MainWindow, self).__init__(*args,**kwargs)
 
         gui_ini = 'gui_cfg.ini'
-        config = configparser.ConfigParser()
+        config = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
+        config.optionxform = lambda option: option  # preserve case for letters
         config.read(gui_ini)
         self.stdout_result = StringIO()
 
@@ -162,11 +164,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.target_accept.clicked.connect(self.enter_target_details)
         self.description_accept.clicked.connect(self.enter_description)
         self.pulses_button = QtWidgets.QPushButton('Pulses')
+        self.pulses_button.clicked.connect(self.run_pulse_editor)
         #Textboxes
         self.target_details = QtWidgets.QLineEdit(self)
         self.target_details.editingFinished.connect(self.enter_target_details)
         self.experiment_name_edit = QtWidgets.QLineEdit(self)
-        self.experiment_name_edit.editingFinished.connect(self.enter_scene)
+        self.experiment_name_edit.editingFinished.connect(self.enter_description)
         self.scene_edit = QtWidgets.QLineEdit(self)
         #self.scene_edit.editingFinished.connect(self.enter_scene)
 
@@ -253,18 +256,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.start(500)
 
     def init_nextheader_values(self):
-        config = configparser.ConfigParser()
+
+        config = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
+        config.optionxform = lambda option: option  # preserve case for letters
         config.read(self.nextrad_ini)
-        self.node_0_latlong = config.get('GeometrySettings','node0_location_lat')+','+config.get('GeometrySettings','node0_location_lon')
-        self.node_1_latlong = config.get('GeometrySettings','node1_location_lat')+','+config.get('GeometrySettings','node1_location_lon')
-        self.node_2_latlong = config.get('GeometrySettings','node2_location_lat')+','+config.get('GeometrySettings','node2_location_lon')
-        self.target_latlong = config.get('TargetSettings','tgt_location_lat')+','+config.get('TargetSettings','tgt_location_lon')
+        self.node_0_latlong = config.get('GeometrySettings','NODE0_LOCATION_LAT')+','+config.get('GeometrySettings','NODE0_LOCATION_LON')
+        self.node_1_latlong = config.get('GeometrySettings','NODE1_LOCATION_LAT')+','+config.get('GeometrySettings','NODE1_LOCATION_LON')
+        self.node_2_latlong = config.get('GeometrySettings','NODE2_LOCATION_LAT')+','+config.get('GeometrySettings','NODE2_LOCATION_LON')
+        self.target_latlong = config.get('TargetSettings','TGT_LOCATION_LAT')+','+config.get('TargetSettings','TGT_LOCATION_LON')
 
-        self.experiment_name = config.get('Notes','experiment_name')
-        self.target_description = config.get('Notes','experiment_notes')
+        self.experiment_name = config.get('Notes','EXPERIMENT_NAME')
+        self.target_description = config.get('Notes','EXPERIMENT_NOTES')
 
-        self.num_pri = int(config.get('PulseParameters','num_pris'))
-        self.pulses = config.get('PulseParameters','pulses')
+        self.num_pri = int(config.get('PulseParameters','NUM_PRIS'))
+        self.pulses = config.get('PulseParameters','PULSES')
         self.pri = []
         self.bands = []
         self.pols = []
@@ -275,9 +280,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         for pulse in range(len(pulses_arr)):
             pulses_arr[pulse]=pulses_arr[pulse].replace('\"','')
-            print(pulse)
+            #print(pulse)
             pulses.append(pulses_arr[pulse].split(','))
-            print(pulses[pulse])
+            #print(pulses[pulse])
             self.pri.append(float(pulses[pulse][1]))
             self.pols.append(int(pulses[pulse][2]))
             self.bands.append(float(pulses[pulse][3].replace('\"','')))
@@ -366,7 +371,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.node_two_include = 0
 
     def create_host_dict(self):
-        config = configparser.ConfigParser()
+        config = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
+        config.optionxform = lambda option: option  # preserve case for letters
         config.read(self.connections_ini)
 
         hosts = config.items('Hosts')
@@ -523,8 +529,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.rhino_two.setText('Missing config')
 
     def run_quickview(self):
-        if self.plot_is_active == 1:
-            subprocess.call('python3 plottty.py &',shell=True)
+        #if self.plot_is_active == 1:
+        subprocess.call('python3 plottty.py &',shell=True)
+
+    def run_pulse_editor(self):
+        subprocess.call('cd ../tcu_software/ && python3 creator.py &',shell=True)
 
     def abort_experiment(self):
         print('Aborting Experiment!')
@@ -532,7 +541,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.time_remaining = 0
         self.experiment_running = 0
         self.ansi_running = 0
-        self.ansi_shell_command(self.valid_nodes,'echo did this work')
+        self.ansi_shell_command(self.valid_penteks,'cd ' + self.pentek_header_dir + ' && ./killscript.sh &' )
         self.run_button.setText('Run')
 
     def enter_target_details(self):
@@ -548,16 +557,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def enter_description(self):
         ini_file = self.nextrad_ini
-        config = configparser.ConfigParser()
+        config = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
+        config.optionxform = lambda option: option  # preserve case for letters
         config.read(ini_file)
 
         if self.experiment_name_edit.text() != '':
-            config['Notes']['experiment_name'] = self.experiment_name_edit.text()
+            config['Notes']['EXPERIMENT_NAME'] = self.experiment_name_edit.text()
             print('Description Set')
 
         else:
             print('Nothing Entered, Using Default \'No Description\'')
-            config['Notes']['experiment_name'] = 'No Description'
+            config['Notes']['EXPERIMENT_NAME'] = 'No Description'
 
         with open(self.nextrad_ini,'w') as configfile:
             config.write(configfile)
@@ -601,11 +611,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def ansi_play(self):
         if self.ansi_running == 1:
+            self.ansi_copy(self.valid_penteks,self.nextrad_ini,self.pentek_header_dir)
             #self.ansi_copy(self.valid_hosts,'~/Documents/NeXtRAD.ini')
             self.ansi_copy(self.valid_nodes,self.nextrad_ini,self.node_header_dir)
             self.ansi_copy(self.valid_nodes,self.nextrad_ini,self.gpsdo_header_dir)
-            self.ansi_copy(self.valid_rhinos,self.nextrad_ini,self.rhino_header_dir)
-            self.ansi_copy(self.valid_penteks,self.nextrad_ini,self.pentek_header_dir)
+            #self.ansi_copy(self.valid_rhinos,self.nextrad_ini,self.rhino_header_dir)
+            self.ansi_shell_command(self.valid_penteks,'cd ' + self.pentek_header_dir + ' ./run_cobalt.sh')
             self.ansi_running = 0
 
     def timer_thread(self):
@@ -702,10 +713,10 @@ class MainWindow(QtWidgets.QMainWindow):
         outputfile='NeXtRAD.ini'
 
         nextrad_ini = inputfile
-        config = configparser.ConfigParser()
+        config = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
         config.optionxform = lambda option: option  # preserve case for letters
         config.read(nextrad_ini)
-        delay = config.get('Timing','starttimesecs')
+        delay = config.get('Timing','STARTTIMESECS')
 
         self.start_time = datetime.datetime.now() + datetime.timedelta(seconds=int(delay))
 
@@ -726,7 +737,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Pulse Parameters
         print('Using Header: ', inputfile)
         print('Start Delay set to ', delay, ' seconds')
-
+        copy('NeXtRAD.ini', self.cnc_header_loc + '/NeXtRAD.ini')
         self.init_nextheader_values()
 
 

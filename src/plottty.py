@@ -26,7 +26,7 @@ fig, axes = plt.subplots(3, 6, figsize=(20,13))
 plt.subplots_adjust(wspace=0.01, hspace=0.05)
 configplot = configparser.ConfigParser()
 
-configplot.read('/home/si/Dropbox/PyProjects/Update_Plot/plotconfig.ini')
+configplot.read('plotconfig.ini')
 direct0=configplot['DIRECTS']['NODE_0_IMG']
 rti00=configplot['IMAGES']['RTI_NODE0_CH0'] 
 dop00=configplot['IMAGES']['DOP_NODE0_CH0']   

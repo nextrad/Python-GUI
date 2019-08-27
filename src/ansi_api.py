@@ -5,6 +5,8 @@ import configparser
 import subprocess
 import ast
 import signal
+import os
+import sys
 
 
 def create_host_dict():
@@ -14,6 +16,9 @@ def create_host_dict():
 
 
     hosts = config.items('Hosts')
+    ping_count = config.get('Config','ping_count')
+    timeout = config.get('Config','timeout')
+    poll_rate = config.get('Config','poll_rate')
 
     host_dict = {}
     for item in hosts:
@@ -28,7 +33,7 @@ def create_host_dict():
         host_dict[k] = ''.join(host_dict[k])
         host_dict[k] = ast.literal_eval(host_dict[k])
 
-    return host_dict, config, adjust_ini
+    return host_dict, config, adjust_ini, ping_count, timeout, poll_rate
 
 
 def handler(signum, frame):
@@ -38,33 +43,24 @@ def handler(signum, frame):
 signal.signal(signal.SIGALRM, handler)
 
 while True:
-    signal.alarm(3)
-    subprocess.call(['rm -r ~/.ansible/cp/'],shell=True)
+    #signal.alarm(3)
 
-    host_dict, config, adjust_ini = create_host_dict()
-    api_dict = {}
+    host_dict, config, adjust_ini, ping_count, timeout, poll_rate = create_host_dict()
 
-    for k,v in host_dict.items():
-
-        api_dict.update({k:Api(host_dict[k]['ip'],extra_vars={'ansible_user':host_dict[k]['user'],'ansible_connection': 'ssh','ansible_password':host_dict[k]['pswd']})})
-    #print(host_dict)
-    #print(api_dict)
-    for k,v in api_dict.items():
-
+    for hostname,data in host_dict.items():
         try:
-            result = api_dict[k].ping()
-            #print(result['contacted'][host_dict[k]['ip']]['ping'])
-            config['Hosts'][k] = '\'' + host_dict[k]['user'] + '\',\'' + str(host_dict[k]['ip']) + '\',\'' + str(host_dict[k]['pswd']) + '\',1'
-            print(result)
-        except:
-            print('Failed to connect:' + k)
-            config['Hosts'][k] = '\'' + host_dict[k]['user']+ '\',\''  + str(host_dict[k]['ip']) + '\',\'' + str(host_dict[k]['pswd']) + '\',0'
-            #print(Exception)
-        signal.alarm(3)
+            response = os.system('ping -c ' + ping_count + ' -W ' + timeout + ' ' + data['ip'])
+            if response == 0:
+                config['Hosts'][hostname] = '\'' + host_dict[hostname]['user'] + '\',\'' + str(host_dict[hostname]['ip']) + '\',\'' + str(host_dict[hostname]['pswd']) + '\',1'
+                print(hostname + ' is up!')
+            else:
+                config['Hosts'][hostname] = '\'' + host_dict[hostname]['user']+ '\',\''  + str(host_dict[hostname]['ip']) + '\',\'' + str(host_dict[hostname]['pswd']) + '\',0'
+                print(hostname + ' is down!')
+            config['JSON']['packet'] = str(host_dict)
 
-    config['JSON']['packet'] = str(host_dict)
-
-    with open(adjust_ini,'w') as configfile:
-            config.write(configfile)
-
-
+            with open(adjust_ini,'w') as configfile:
+                    config.write(configfile)
+            time.sleep(float(poll_rate))
+        except KeyboardInterrupt:
+            print('Exit Key!')
+            sys.exit(0)
