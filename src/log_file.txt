@@ -42,3 +42,50 @@ Timestamp;RF Frequency;Polarisations;Pulse Widths;PRI;Number of PRIs;Scene Descr
 19_8_28_11_43_55;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
 19_8_28_11_46_41;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
 19_8_28_11_48_48;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_12_25;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_15_22;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_17_25;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_22_28;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_24_13;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_25_24;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_26_43;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_29_45;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_34_35;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_37_25;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_40_29;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_49_18;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_54_10;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_12_55_24;[1300.0, 8500.0, 8500.0];[3, 3, 3];[5.0, 5.0, 5.0];[1001.0, 1001.0, 1001.0];5000;No Notes. Change in text file if necessary.
+19_8_28_13_6_2;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_9_48;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_10_35;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_11_45;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_13_58;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_14_55;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_16_41;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_30_40;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_31_40;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_38_27;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_44_19;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_44_57;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_45_29;[1300.0];[3];[5.0];[1001.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_50_44;[1300.0];[3];[5.0];[1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_13_53_23;[1300.0];[3];[5.0];[1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_14_54_56;[1300.0];[3];[5.0];[1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_14_55_53;[1300.0];[3];[5.0];[1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_0_54;[1300.0];[3];[5.0];[1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_1_53;[1300.0];[3];[5.0];[1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_4_6;[1300.0];[3];[5.0];[1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_5_18;[1300.0];[3];[5.0];[1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_5_56;[1300.0];[3];[5.0];[1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_6_40;[1300.0];[3];[5.0];[1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_19_17;[1300.0, 8500.0];[3, 5];[5.0, 10.0];[1000.0, 1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_30_17;[1300.0, 8500.0];[3, 5];[5.0, 10.0];[1000.0, 1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_30_44;[1300.0, 8500.0];[3, 5];[5.0, 10.0];[1000.0, 1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_31_15;[1300.0, 8500.0];[3, 5];[5.0, 10.0];[1000.0, 1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_31_49;[1300.0, 8500.0];[3, 5];[5.0, 10.0];[1000.0, 1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_37_29;[1300.0, 8500.0];[3, 5];[5.0, 10.0];[1000.0, 1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_38_40;[1300.0, 8500.0];[3, 5];[5.0, 10.0];[1000.0, 1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_39_17;[1300.0, 8500.0];[3, 5];[5.0, 10.0];[1000.0, 1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_39_53;[1300.0, 8500.0];[3, 5];[5.0, 10.0];[1000.0, 1000.0];10000;No Notes. Change in text file if necessary.
+19_8_28_15_40_56;[1300.0];[3];[5.0];[1000.0];10000;No Notes. Change in text file if necessary.

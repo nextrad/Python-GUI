@@ -78,6 +78,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.rhino_header_dir = config.get('HeaderDirects','rhinos')
         self.gpsdo_header_dir = config.get('HeaderDirects','gpsdos')
         self.local_copy_delay = config.get('Config','local_copy_delay')
+        self.tcu_pulse_editor = config.get('Files','tcu_pulse_editor')
         print('NeXtRAD Header: ' + self.nextrad_ini)
 
         #State Flags
@@ -180,6 +181,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.node_1_disable.stateChanged.connect(self.disable_node1)
         self.node_2_disable = QtWidgets.QCheckBox("Node 2",self)
         self.node_2_disable.stateChanged.connect(self.disable_node2)
+        self.auto_save = QtWidgets.QCheckBox("Autosave",self)
+        self.auto_save.stateChanged.connect(self.auto_saver)
         #Connection Stats
         #Penteks
         # self.pent_1 = QLabel('Pentek 0')
@@ -193,7 +196,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.view.load(QtCore.QUrl.fromLocalFile(os.path.abspath('map.html')))
 
 
-        layout.addWidget(self.lbl_timer,0,1,1,3)
+        layout.addWidget(self.lbl_timer,0,1)
+        layout.addWidget(self.auto_save,0,2)
         #layout.addWidget(self.text,0,0,1,2)
 
         layout.addWidget(self.run_button,2,0)
@@ -301,6 +305,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_map('var n0 = ','var n0 = [' + self.node_0_latlong + '];\n')
         self.update_map('var n1 = ','var n1 = [' + self.node_1_latlong + '];\n')
         self.update_map('var n2 = ','var n2 = [' + self.node_2_latlong + '];\n')
+
+    def auto_saver(self):
+        print('Autosaving On')
 
     def create_valid_hosts(self):
         self.valid_hosts = {}
@@ -533,7 +540,7 @@ class MainWindow(QtWidgets.QMainWindow):
         subprocess.call('python3 plottty.py &',shell=True)
 
     def run_pulse_editor(self):
-        subprocess.call('cd ../tcu_software/ && python3 creator.py &',shell=True)
+        subprocess.call('cd ' + self.tcu_pulse_editor + ' && python3 creator.py -f ' + self.nextrad_ini + ' -o ' + self.nextrad_ini + ' &',shell=True)
 
     def abort_experiment(self):
         print('Aborting Experiment!')
@@ -613,13 +620,16 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.ansi_running == 1:
             self.ansi_copy(self.valid_penteks,self.nextrad_ini,self.pentek_header_dir)
             #self.ansi_copy(self.valid_hosts,'~/Documents/NeXtRAD.ini')
-            self.ansi_copy(self.valid_nodes,self.nextrad_ini,self.node_header_dir)
+            
             self.ansi_copy(self.valid_nodes,self.nextrad_ini,self.gpsdo_header_dir)
             #self.ansi_copy(self.valid_rhinos,self.nextrad_ini,self.rhino_header_dir)
-            self.ansi_shell_command(self.valid_penteks,'cd ' + self.pentek_header_dir + ' ./run_cobalt.sh')
+            self.ansi_shell_command(self.valid_penteks,'cd ' + self.pentek_header_dir + ' && ./run-cobalt.sh')
             self.ansi_running = 0
+            self.ansi_shell_command(self.valid_nodes,'cd ' + self.node_header_dir + ' && rm NeXtRAD.ini')
             time.sleep(int(self.local_copy_delay))
             copy('NeXtRAD.ini', self.cnc_header_loc + '/NeXtRAD.ini')
+
+            self.ansi_copy(self.valid_nodes,self.nextrad_ini,self.node_header_dir)
 
     def timer_thread(self):
         self.countdown_timer()
