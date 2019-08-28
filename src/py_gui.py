@@ -77,7 +77,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.pentek_header_dir = config.get('HeaderDirects','penteks')
         self.rhino_header_dir = config.get('HeaderDirects','rhinos')
         self.gpsdo_header_dir = config.get('HeaderDirects','gpsdos')
-
+        self.local_copy_delay = config.get('Config','local_copy_delay')
         print('NeXtRAD Header: ' + self.nextrad_ini)
 
         #State Flags
@@ -618,6 +618,8 @@ class MainWindow(QtWidgets.QMainWindow):
             #self.ansi_copy(self.valid_rhinos,self.nextrad_ini,self.rhino_header_dir)
             self.ansi_shell_command(self.valid_penteks,'cd ' + self.pentek_header_dir + ' ./run_cobalt.sh')
             self.ansi_running = 0
+            time.sleep(int(self.local_copy_delay))
+            copy('NeXtRAD.ini', self.cnc_header_loc + '/NeXtRAD.ini')
 
     def timer_thread(self):
         self.countdown_timer()
@@ -737,7 +739,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Pulse Parameters
         print('Using Header: ', inputfile)
         print('Start Delay set to ', delay, ' seconds')
-        copy('NeXtRAD.ini', self.cnc_header_loc + '/NeXtRAD.ini')
+
         self.init_nextheader_values()
 
 
