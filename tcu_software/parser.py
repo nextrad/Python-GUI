@@ -7,20 +7,12 @@ import prettytable
 class HeaderFileParser(object):
     """NeXtRAD.ini File Parser"""
     def __init__(self, file_name=''):
+        self.file_name = file_name
         self.logger = logging.getLogger('header_file_parser_logger')
-        self.file_parser = configparser.ConfigParser()
-        self.file_parser.optionxform = str  # retain upper case for keys
-        self.file_parser['PulseParameters'] = {'WAVEFORM_INDEX': '0',
-                                               'NUM_PRIS': '0',
-                                               'PRE_PULSE': '0',
-                                               'PRI_PULSE_WIDTH': '0',
-                                               'X_AMP_DELAY': '0',
-                                               'L_AMP_DELAY': '0',
-                                               'REX_DELAY': '0',
-                                               'DAC_DELAY': '0',
-                                               'ADC_DELAY': '0',
-                                               'SAMPLES_PER_PRI': '0',
-                                               'PULSES': '""'}
+        self.file_parser = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
+        self.file_parser.optionxform = lambda option: option
+        #self.file_parser.optionxform = str  # retain upper case for keys
+   
         if file_name != '':
             self.read_header(file_name)
 
@@ -80,29 +72,29 @@ class HeaderFileParser(object):
             pulses_list = pulses.split('|')
             if pulses_list == ['']:
                 pulses_list.clear()
-            tcu_params['num_pulses'] = len(pulses_list)
+            tcu_params['NUM_PULSES'] = len(pulses_list)
             num_pris = eval(self._extract_param('NUM_PRIS'))
-            if tcu_params['num_pulses'] != 0:
-                tcu_params['num_repeats'] = num_pris//tcu_params['num_pulses']
+            if tcu_params['NUM_PULSES'] != 0:
+                tcu_params['NUM_REPEATS'] = num_pris//tcu_params['NUM_PULSES']
             else:
-                tcu_params['num_repeats'] = 0
-            tcu_params['pri_pulse_width'] = eval(self._extract_param('PRI_PULSE_WIDTH'))
-            tcu_params['pre_pulse'] = eval(self._extract_param('PRE_PULSE'))
-            tcu_params['x_amp_delay'] = eval(self._extract_param('X_AMP_DELAY'))
-            tcu_params['l_amp_delay'] = eval(self._extract_param('L_AMP_DELAY'))
-            tcu_params['rex_delay'] = eval(self._extract_param('REX_DELAY'))
-            tcu_params['dac_delay'] = eval(self._extract_param('DAC_DELAY'))
-            tcu_params['adc_delay'] = eval(self._extract_param('ADC_DELAY'))
-            tcu_params['samples_per_pri'] = eval(self._extract_param('SAMPLES_PER_PRI'))
-            tcu_params['waveform_index'] = eval(self._extract_param('WAVEFORM_INDEX'))
-            tcu_params['pulses'] = []
+                tcu_params['NUM_REPEATS'] = 0
+            tcu_params['PRI_PULSE_WIDTH'] = eval(self._extract_param('PRI_PULSE_WIDTH'))
+            tcu_params['PRE_PULSE'] = eval(self._extract_param('PRE_PULSE'))
+            tcu_params['X_AMP_DELAY'] = eval(self._extract_param('X_AMP_DELAY'))
+            tcu_params['L_AMP_DELAY'] = eval(self._extract_param('L_AMP_DELAY'))
+            tcu_params['REX_DELAY'] = eval(self._extract_param('REX_DELAY'))
+            tcu_params['DAC_DELAY'] = eval(self._extract_param('DAC_DELAY'))
+            tcu_params['ADC_DELAY'] = eval(self._extract_param('ADC_DELAY'))
+            tcu_params['SAMPLES_PER_PRI'] = eval(self._extract_param('SAMPLES_PER_PRI'))
+            tcu_params['WAVEFORM_INDEX'] = eval(self._extract_param('WAVEFORM_INDEX'))
+            tcu_params['PULSES'] = []
             for pulse in pulses_list:
                 pulse_params = pulse.split(',')
                 pulse_param_dict = {'pulse_width':eval(pulse_params[0]),
                                     'pri':eval(pulse_params[1]),
                                     'pol_mode':eval(pulse_params[2]),
                                     'frequency':eval(pulse_params[3])}
-                tcu_params['pulses'].append(pulse_param_dict)
+                tcu_params['PULSES'].append(pulse_param_dict)
         return tcu_params
 
     def _extract_param(self, param):
@@ -115,7 +107,7 @@ class HeaderFileParser(object):
             result = self.file_parser['PulseParameters'][param]
         except Exception as e:
             self.logger.error('Could not find required parameter "{}"'
-                              .format(param, self.file_name))
+                            .format(param, self.file_name))
             exit(65)
         return result
 
@@ -127,10 +119,10 @@ class HeaderFileParser(object):
     def write_header(self, file_name):
         """ writes tcu params to header file """
         with open(file_name, 'w') as configfile:
-            configfile.write('# Intermediary ini file for TCU\n')
-            configfile.write('[PulseParameters]\n')
-            for key in self.file_parser['PulseParameters']:
-                configfile.write(key + ' = ' + self.file_parser['PulseParameters'][key]+'\n')
+            #configfile.write('# Intermediary ini file for TCU\n')
+            configfile.write(configfile)
+            #for key in self.file_parser['PulseParameters']:
+             #   configfile.write(key + ' = ' + self.file_parser['PulseParameters'][key]+'\n')
 
     def set_tcu_params(self, params):
         """ sets parser with given parameters
@@ -182,18 +174,18 @@ class TCUParams(object):
         self.outputfilename = outputfile
         params = self.hfparser.get_tcu_params()
         self.clk_period_ns = 10
-        self.num_pulses = params['num_pulses']
-        self.num_repeats = params['num_repeats']
-        self.pri_pulse_width = params['pri_pulse_width']
-        self.pre_pulse = params['pre_pulse']
-        self.x_amp_delay = params['x_amp_delay']
-        self.l_amp_delay = params['l_amp_delay']
-        self.rex_delay = params['rex_delay']
-        self.pulses = params['pulses']
-        self.dac_delay = params['dac_delay']
-        self.adc_delay = params['adc_delay']
-        self.samples_per_pri = params['samples_per_pri']
-        self.waveform_index = params['waveform_index']
+        self.num_pulses = params['NUM_PULSES']
+        self.num_repeats = params['NUM_REPEATS']
+        self.pri_pulse_width = params['PRI_PULSE_WIDTH']
+        self.pre_pulse = params['PRE_PULSE']
+        self.x_amp_delay = params['X_AMP_DELAY']
+        self.l_amp_delay = params['L_AMP_DELAY']
+        self.rex_delay = params['REX_DELAY']
+        self.pulses = params['PULSES']
+        self.dac_delay = params['DAC_DELAY']
+        self.adc_delay = params['ADC_DELAY']
+        self.samples_per_pri = params['SAMPLES_PER_PRI']
+        self.waveform_index = params['WAVEFORM_INDEX']
 
     def __str__(self):
         ptable_global = prettytable.PrettyTable()
