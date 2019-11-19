@@ -514,9 +514,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.rhino_zero.setText('Missing config')
         try:
             self.rhino_one.setText('Rhino 1')
-            if self.host_dict['rhino0']['is_con'] == 0 and self.rhino_one_include == 1:
+            if self.host_dict['rhino1']['is_con'] == 0 and self.rhino_one_include == 1:
                 self.rhino_one.setStyleSheet('color: red')
-            elif self.host_dict['rhino0']['is_con'] == 1 and self.rhino_one_include == 1:
+            elif self.host_dict['rhino1']['is_con'] == 1 and self.rhino_one_include == 1:
                 self.rhino_one.setStyleSheet('color: green')
             else:
                 self.rhino_one.setStyleSheet('color: gray')
