@@ -82,6 +82,7 @@ class MainWindow(QtWidgets.QMainWindow):
         print('NeXtRAD Header: ' + self.nextrad_ini)
 
         #State Flags
+        self.autosaving = 0 #Autosaving feature off by default
         self.current_time = 0
         self.stop_timer = 0
         self.ansi_running = 0
@@ -101,11 +102,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.pent_two_include = 0
         self.rhino_two_include = 0
         self.node_two_include = 0
+        self.cam0_include = 0
+        self.cam1_include = 0
+        self.cam2_include = 0
+
         #Initialisers
         self.node_1_latlong = '0,0'
         self.node_2_latlong = '0,0'
         self.node_0_latlong = '0,0'
         self.target_latlong = '0,0'
+        self.node_0_ht = '0'
+        self.node_0_ht = '0'
+        self.node_0_ht = '0'
+        self.target_ht = '0'
         self.target_name = ''
         #nodes
         self.node0_location_name = ''
@@ -267,7 +276,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.node_0_latlong = config.get('GeometrySettings','NODE0_LOCATION_LAT')+','+config.get('GeometrySettings','NODE0_LOCATION_LON')
         self.node_1_latlong = config.get('GeometrySettings','NODE1_LOCATION_LAT')+','+config.get('GeometrySettings','NODE1_LOCATION_LON')
         self.node_2_latlong = config.get('GeometrySettings','NODE2_LOCATION_LAT')+','+config.get('GeometrySettings','NODE2_LOCATION_LON')
+        self.node_0_ht = config.get('GeometrySettings','NODE0_LOCATION_HT')
+        self.node_1_ht = config.get('GeometrySettings','NODE1_LOCATION_HT')
+        self.node_2_ht = config.get('GeometrySettings','NODE2_LOCATION_HT')
         self.target_latlong = config.get('TargetSettings','TGT_LOCATION_LAT')+','+config.get('TargetSettings','TGT_LOCATION_LON')
+        self.target_ht = config.get('TargetSettings','TGT_LOCATION_HT')
 
         self.experiment_name = config.get('Notes','EXPERIMENT_NAME')
         self.target_description = config.get('Notes','EXPERIMENT_NOTES')
@@ -307,7 +320,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_map('var n2 = ','var n2 = [' + self.node_2_latlong + '];\n')
 
     def auto_saver(self):
-        print('Autosaving On')
+        if self.auto_save.isChecked():
+            self.autosaving = 1
+            print('Autosaving On')
+        else:
+            self.autosaving = 0
+            print('Autosaving Off')
 
     def create_valid_hosts(self):
         self.valid_hosts = {}
@@ -620,7 +638,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.ansi_running == 1:
             self.ansi_copy(self.valid_penteks,self.nextrad_ini,self.pentek_header_dir)
             #self.ansi_copy(self.valid_hosts,'~/Documents/NeXtRAD.ini')
-            
+
             self.ansi_copy(self.valid_nodes,self.nextrad_ini,self.gpsdo_header_dir)
             #self.ansi_copy(self.valid_rhinos,self.nextrad_ini,self.rhino_header_dir)
             self.ansi_shell_command(self.valid_penteks,'cd ' + self.pentek_header_dir + ' && ./run-cobalt.sh')
@@ -677,6 +695,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.run_button.setText('Run')
         if self.save_scene_check == 1:
             self.save_scene()
+        if self.autosaving == 1:
+            self.save_adc_data()
+
+    def save_adc_data(self):
+        print('Saving ADC Files to External Hardrive/s')
+        if self.pent_zero_include:
+            subprocess.call('ansible pentek0 -m shell -a \"' + 'nextlook -n 0 -b' + '\" &',shell=True)
+        if self.pent_one_include:
+            subprocess.call('ansible pentek1 -m shell -a \"' + 'nextlook -n 1 -b' + '\" &',shell=True)
+        if self.pent_two_include:
+            subprocess.call('ansible pentek2 -m shell -a \"' + 'nextlook -n 2 -b' + '\" &',shell=True)
+
 
     def save_scene(self):
         if self.scene_edit.text() == '':
@@ -693,6 +723,7 @@ class MainWindow(QtWidgets.QMainWindow):
         str(self.pulse_width) + ';' + \
         str(self.pri) + ';' + \
         str(self.num_pri) + ';' + \
+        str(self.experiment_name) + ';' + \
         str(self.scene_edit.text())
 
         with open(self.experiment_log_file,'a') as csvfile:
@@ -703,7 +734,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 csvfile.write(experiment_log + '\n')
 
             else:
-                csvfile.write('Timestamp;RF Frequency;Polarisations;Pulse Widths;PRI;Number of PRIs;Scene Description\n')
+                csvfile.write('Timestamp;RF Frequency;Polarisations;Pulse Widths;PRI;Number of PRIs;Experiment;Notes\n')
                 print('Log File Appended')
                 self.save_scene_check = 0
                 self.scene_edit.setText('')
@@ -738,6 +769,20 @@ class MainWindow(QtWidgets.QMainWindow):
         config['Timing']['HOUR'] = str(self.start_time.hour).zfill(2)
         config['Timing']['MINUTE'] = str(self.start_time.minute).zfill(2)
         config['Timing']['SECOND'] = str(self.start_time.second).zfill(2)
+
+        config['GeometrySettings']['NODE0_LOCATION_LAT'] = str(eval(self.node_0_latlong)[0])
+        config['GeometrySettings']['NODE0_LOCATION_LON'] = str(eval(self.node_0_latlong)[1])
+        config['GeometrySettings']['NODE0_LOCATION_HT'] = self.node_0_ht
+        config['GeometrySettings']['NODE1_LOCATION_LAT'] = str(eval(self.node_1_latlong)[0])
+        config['GeometrySettings']['NODE1_LOCATION_LON'] = str(eval(self.node_1_latlong)[1])
+        config['GeometrySettings']['NODE1_LOCATION_HT'] = self.node_1_ht
+        config['GeometrySettings']['NODE2_LOCATION_LAT'] = str(eval(self.node_2_latlong)[0])
+        config['GeometrySettings']['NODE2_LOCATION_LON'] = str(eval(self.node_2_latlong)[1])
+        config['GeometrySettings']['NODE2_LOCATION_HT'] = self.node_2_ht
+        config['TargetSettings']['TGT_LOCATION_LAT'] = str(eval(self.target_latlong)[0])
+        config['TargetSettings']['TGT_LOCATION_LON'] = str(eval(self.target_latlong)[1])
+        config['TargetSettings']['TGT_LOCATION_HT'] = self.target_ht
+
 
         #print('Experiment Start Time: ', self.start_time)
 
