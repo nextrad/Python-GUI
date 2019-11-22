@@ -8,10 +8,10 @@ var redIcon = new L.Icon({
 });
 
 
-var n1 = [-34.1733,18.428];
-var n2 = [-34.1926,18.4458];
-var n0 = [-34.1925,18.4456];
-var trgt = [-34.163381, 18.45686];
+var n1 = [-33.9584575,18.45992138888889];
+var n2 = [-33.9584575,18.45992138888889];
+var n0 = [-33.9584575,18.45992138888889];
+var trgt = [-34.163381,18.45686];
 var map = L.map('map').setView([-34.19, 18.45], 13);
 var target = L.marker(trgt,{icon: redIcon}).addTo(map);
 var node0 = L.marker(n0).addTo(map);
@@ -42,7 +42,7 @@ function onMapClick(e) {
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 	attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 	maxZoom: 18,
-	id: 'mapbox.streets',
+    id: 'mapbox.outdoors',
 	accessToken: 'pk.eyJ1IjoidXNlbmFtZXVzdXJwZXIiLCJhIjoiY2p6ZHdtMG9vMGJrNDNxdWl0OWJuZG9qeiJ9.YfrEsL3WyMm3aPG-kRXz1g'
 }).addTo(map);
 

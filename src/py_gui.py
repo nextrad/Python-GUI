@@ -79,6 +79,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gpsdo_header_dir = config.get('HeaderDirects','gpsdos')
         self.local_copy_delay = config.get('Config','local_copy_delay')
         self.tcu_pulse_editor = config.get('Files','tcu_pulse_editor')
+        self.gps0_ini = config.get('HeaderDirects','gps0') + '/gps_info.ini'
+        self.gps1_ini = config.get('HeaderDirects','gps1') + '/gps_info.ini'
+        self.gps2_ini = config.get('HeaderDirects','gps2') + '/gps_info.ini'
+
         print('NeXtRAD Header: ' + self.nextrad_ini)
 
         #State Flags
@@ -105,6 +109,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.cam0_include = 0
         self.cam1_include = 0
         self.cam2_include = 0
+        self.map_style = 0
+
 
         #Initialisers
         self.node_1_latlong = '0,0'
@@ -164,8 +170,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.lbl_pri = QtWidgets.QLabel('PRI: ' + str(self.pri))
 
         #Pushbuttons
+        self.map_style_button = QtWidgets.QPushButton('Map Style')
         self.run_button = QtWidgets.QPushButton('Run')
         self.abort_button = QtWidgets.QPushButton('Quickview')
+        self.save_button = QtWidgets.QPushButton('Save ADC Data')
+        self.map_style_button.clicked.connect(self.change_map_style)
+        self.save_button.clicked.connect(self.save_adc_data)
         self.run_button.clicked.connect(self.run_experiment)
         self.abort_button.clicked.connect(self.run_quickview)
         self.target_accept = QtWidgets.QPushButton('Enter Details')
@@ -207,6 +217,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         layout.addWidget(self.lbl_timer,0,1)
         layout.addWidget(self.auto_save,0,2)
+        layout.addWidget(self.save_button,0,3)
         #layout.addWidget(self.text,0,0,1,2)
 
         layout.addWidget(self.run_button,2,0)
@@ -223,6 +234,7 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addWidget(self.description_accept,1,3)
 
         layout.addWidget(self.view,2,1,15,3)
+        layout.addWidget(self.map_style_button,16,1)
 
         layout.addWidget(self.target_details,17,2)
         layout.addWidget(self.lbl_trgt_latlong,17,1)
@@ -260,6 +272,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(w)
         self.init_map()
         self.target_details.setText(self.target_latlong)
+        self.change_map_style()
         self.experiment_name_edit.setText(self.experiment_name)
 
         self.show()
@@ -312,7 +325,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.lbl_pw.setText('PW: ' + str(self.pulse_width))
         self.lbl_pol.setText('Pols: ' + str(self.pols))
         self.lbl_pri.setText('PRI: ' + str(self.pri))
-
 
     def init_map(self):
         self.update_map('var n0 = ','var n0 = [' + self.node_0_latlong + '];\n')
@@ -572,10 +584,19 @@ class MainWindow(QtWidgets.QMainWindow):
     def enter_target_details(self):
         if self.target_details.text() != '':
             self.target_latlong = self.target_details.text()
+            self.init_map()
             self.update_map('var trgt = ','var trgt = [' + self.target_latlong + '];\n')
             print('Target Details Updated')
         else:
             print('Please Enter Valid Address as Lat, Long')
+
+    def change_map_style(self):
+        if self.map_style == 0:
+            self.update_map('id: \'mapbox.','    id: \'mapbox.outdoors\',\n')
+            self.map_style = 1
+        else:
+            self.update_map('id: \'mapbox.','    id: \'mapbox.satellite\',\n')
+            self.map_style = 0
 
     def enter_scene(self):
         print('Scene description added to excel file')
@@ -599,6 +620,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_map(self,textin,replace):
 
+        self.update_gps_positions(self.valid_nodes)
+
         copyfile('map.js', 'map_backup.js')
         with open('map.js') as fin, open('map_temp.js', 'w') as fout:
             for line in fin:
@@ -609,6 +632,78 @@ class MainWindow(QtWidgets.QMainWindow):
 
         os.rename('map_temp.js', 'map.js')
         self.view.load(QtCore.QUrl.fromLocalFile(os.path.abspath('map.html')))
+
+    def update_gps_positions(self, host_dict):
+        for k,v in host_dict.items():
+            if k == 'node0' and v['is_con'] == 1:
+                with open(self.gps0_ini) as f:
+                    file_content = '[dummy_section]\n' + f.read()
+
+                config = configparser.ConfigParser(comment_prefixes='#', allow_no_value=True)
+                config.optionxform = lambda option: option  # preserve case for letters
+                config.read_string(file_content)
+                x = int(config.get('dummy_section','LATITUDE'))
+                y = int(config.get('dummy_section','LONGITUDE'))
+                if x > 2**31 - 1 :
+                    x = (2**32 - x)*(-1)
+                else:
+                    x = x
+                if y > 2**31 - 1 :
+                    y = (2**32 - y)*(-1)
+                else:
+                    y = y
+
+                self.node_0_latlong = str(x*90/324e6) +',' + str(y*90/324e6)
+                self.node_0_ht = str(int(config.get('dummy_section','ALTITUDE'))/100)
+
+                print('GPS0 Data: ' + self.node_0_latlong + ', ' + self.node_0_ht )
+            
+            if k == 'node1' and v['is_con'] == 1:
+                with open(self.gps1_ini) as f:
+                    file_content = '[dummy_section]\n' + f.read()
+
+                config = configparser.ConfigParser(comment_prefixes='#', allow_no_value=True)
+                config.optionxform = lambda option: option  # preserve case for letters
+                config.read_string(file_content)
+                x = int(config.get('dummy_section','LATITUDE'))
+                y = int(config.get('dummy_section','LONGITUDE'))
+                if x > 2**31 - 1 :
+                    x = (2**32 - x)*(-1)
+                else:
+                    x = x
+                if y > 2**31 - 1 :
+                    y = (2**32 - y)*(-1)
+                else:
+                    y = y
+
+                self.node_1_latlong = str(x*90/324e6) +',' + str(y*90/324e6)
+                self.node_1_ht = str(int(config.get('dummy_section','ALTITUDE'))/100)
+
+                print('GPS1 Data: ' + self.node_1_latlong + ', ' + self.node_1_ht )
+
+            if k == 'node2' and v['is_con'] == 1:
+                with open(self.gps2_ini) as f:
+                    file_content = '[dummy_section]\n' + f.read()
+
+                config = configparser.ConfigParser(comment_prefixes='#', allow_no_value=True)
+                config.optionxform = lambda option: option  # preserve case for letters
+                config.read_string(file_content)
+                x = int(config.get('dummy_section','LATITUDE'))
+                y = int(config.get('dummy_section','LONGITUDE'))
+                if x > 2**31 - 1 :
+                    x = (2**32 - x)*(-1)
+                else:
+                    x = x
+                if y > 2**31 - 1 :
+                    y = (2**32 - y)*(-1)
+                else:
+                    y = y
+
+                self.node_2_latlong = str(x*90/324e6) +',' + str(y*90/324e6)
+                self.node_2_ht = str(int(config.get('dummy_section','ALTITUDE'))/100)
+
+                print('GPS2 Data: ' + self.node_2_latlong + ', ' + self.node_2_ht )
+
 
     def ansi_shell_command(self,host_dict,command):
         for k,v in host_dict.items():
@@ -696,6 +791,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.save_scene_check == 1:
             self.save_scene()
         if self.autosaving == 1:
+            time.sleep(1)
             self.save_adc_data()
 
     def save_adc_data(self):
@@ -706,7 +802,6 @@ class MainWindow(QtWidgets.QMainWindow):
             subprocess.call('ansible pentek1 -m shell -a \"' + 'nextlook -n 1 -b' + '\" &',shell=True)
         if self.pent_two_include:
             subprocess.call('ansible pentek2 -m shell -a \"' + 'nextlook -n 2 -b' + '\" &',shell=True)
-
 
     def save_scene(self):
         if self.scene_edit.text() == '':

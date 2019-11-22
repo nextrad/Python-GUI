@@ -1,0 +1,12 @@
+Timestamp;RF Frequency;Polarisations;Pulse Widths;PRI;Number of PRIs;Experiment;Notes
+19_11_21_12_32_24;[1300.0];[1];[5.0];[10001.0];120000;Tests;No Notes. Change in text file if necessary.
+19_11_21_12_43_57;[1300.0];[1];[5.0];[1001.0];2000;Tests;No Notes. Change in text file if necessary.
+19_11_21_12_44_53;[1300.0];[1];[5.0];[1001.0];2000;Tests;No Notes. Change in text file if necessary.
+19_11_21_12_45_31;[1300.0];[1];[5.0];[1001.0];2000;Tests;No Notes. Change in text file if necessary.
+19_11_21_12_46_14;[1300.0];[1];[5.0];[1001.0];2000;Tests;boopdadoop
+19_11_21_12_46_53;[1300.0];[1];[5.0];[1001.0];2000;Tests;sheizermanellibitches thats what i say mah ooo
+19_11_21_12_51_50;[1300.0];[1];[5.0];[1001.0];2000;Tests;No Notes. Change in text file if necessary.
+19_11_21_12_54_19;[1300.0];[1];[5.0];[1001.0];2000;Tests;No Notes. Change in text file if necessary.
+19_11_21_18_38_4;[1300.0];[1];[5.0];[1001.0];2000;Tests;No Notes. Change in text file if necessary.
+19_11_22_12_29_48;[1300.0];[1];[5.0];[1001.0];2000;Tests;No Notes. Change in text file if necessary.
+19_11_22_12_58_35;[1300.0];[1];[5.0];[1001.0];2000;Tests;No Notes. Change in text file if necessary.
