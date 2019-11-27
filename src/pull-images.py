@@ -6,29 +6,29 @@ import ast
 
 nextrad_ini = 'gui_cfg.ini'
 con_in = 'connections.ini'
-
-config = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
-config.optionxform = lambda option: option  # preserve case for letters
-config.read(nextrad_ini)
-
-src = config.get('HeaderDirects','pentek_imgs')
-dest = config.get('HeaderDirects','save_imgs')
-
-src_n = config.get('HeaderDirects','gps_config')
-
-dest_n0 = config.get('HeaderDirects','gps0')
-dest_n1 = config.get('HeaderDirects','gps1')
-dest_n2 = config.get('HeaderDirects','gps2')
-
-image_poll_rate = int(config.get('Config','image_poll_rate'))
-
-config2 = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
-config2.optionxform = lambda option: option  # preserve case for letters
-config2.read(con_in)
-
-host_dict =  ast.literal_eval((config2.get('JSON','packet')))
-
 while True:
+    config = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
+    config.optionxform = lambda option: option  # preserve case for letters
+    config.read(nextrad_ini)
+
+    src = config.get('HeaderDirects','pentek_imgs')
+    dest = config.get('HeaderDirects','save_imgs')
+
+    src_n = config.get('HeaderDirects','gps_config')
+
+    dest_n0 = config.get('HeaderDirects','gps0')
+    dest_n1 = config.get('HeaderDirects','gps1')
+    dest_n2 = config.get('HeaderDirects','gps2')
+
+    image_poll_rate = int(config.get('Config','image_poll_rate'))
+
+    config2 = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
+    config2.optionxform = lambda option: option  # preserve case for letters
+    config2.read(con_in)
+
+    host_dict =  ast.literal_eval((config2.get('JSON','packet')))
+
+
     try:
         for host, data in host_dict.items():
             #print(host[:3], type(data['is_con']))

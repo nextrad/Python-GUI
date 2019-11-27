@@ -636,71 +636,80 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_gps_positions(self, host_dict):
         for k,v in host_dict.items():
             if k == 'node0' and v['is_con'] == 1:
-                with open(self.gps0_ini) as f:
-                    file_content = '[dummy_section]\n' + f.read()
+                with open(self.gps0_ini) as f0:
+                    file_content0 = '[dummy_section]\n' + f0.read()
 
-                config = configparser.ConfigParser(comment_prefixes='#', allow_no_value=True)
-                config.optionxform = lambda option: option  # preserve case for letters
-                config.read_string(file_content)
-                x = int(config.get('dummy_section','LATITUDE'))
-                y = int(config.get('dummy_section','LONGITUDE'))
-                if x > 2**31 - 1 :
-                    x = (2**32 - x)*(-1)
-                else:
-                    x = x
-                if y > 2**31 - 1 :
-                    y = (2**32 - y)*(-1)
-                else:
-                    y = y
+                config0 = configparser.RawConfigParser(comment_prefixes=';', allow_no_value=True)
+                config0.optionxform = lambda option: option  # preserve case for letters
+                config0.read_string(file_content0)
+                x = (config0.get('dummy_section','LATITUDE'))
+                y = (config0.get('dummy_section','LONGITUDE'))
+                #  x = int(config0.get('dummy_section','LATITUDE'))
+                # y = int(config0.get('dummy_section','LONGITUDE'))
+                # if x > 2**31 - 1 :
+                #     x = (2**32 - x)*(-1)
+                # else:
+                #     x = x
+                # if y > 2**31 - 1 :
+                #     y = (2**32 - y)*(-1)
+                # else:
+                #     y = y
 
-                self.node_0_latlong = str(x*90/324e6) +',' + str(y*90/324e6)
-                self.node_0_ht = str(int(config.get('dummy_section','ALTITUDE'))/100)
+                # self.node_0_latlong = str(x*90/324e6) +',' + str(y*90/324e6)
+                self.node_0_latlong = x + ',' + y
+                self.node_0_ht = str(config0.get('dummy_section','ALTITUDE'))
 
                 print('GPS0 Data: ' + self.node_0_latlong + ', ' + self.node_0_ht )
             
             if k == 'node1' and v['is_con'] == 1:
-                with open(self.gps1_ini) as f:
-                    file_content = '[dummy_section]\n' + f.read()
+                with open(self.gps1_ini) as f1:
+                    file_content1 = '[dummy_section]\n' + f1.read()
 
-                config = configparser.ConfigParser(comment_prefixes='#', allow_no_value=True)
-                config.optionxform = lambda option: option  # preserve case for letters
-                config.read_string(file_content)
-                x = int(config.get('dummy_section','LATITUDE'))
-                y = int(config.get('dummy_section','LONGITUDE'))
-                if x > 2**31 - 1 :
-                    x = (2**32 - x)*(-1)
-                else:
-                    x = x
-                if y > 2**31 - 1 :
-                    y = (2**32 - y)*(-1)
-                else:
-                    y = y
+                config1 = configparser.RawConfigParser(comment_prefixes=';', allow_no_value=True)
+                config1.optionxform = lambda option: option  # preserve case for letters
+                config1.read_string(file_content1)
+                x = (config1.get('dummy_section','LATITUDE'))
+                y = (config1.get('dummy_section','LONGITUDE'))
+                # x = int(config1.get('dummy_section','LATITUDE'))
+                # y = int(config1.get('dummy_section','LONGITUDE'))
+                # if x > 2**31 - 1 :
+                #     x = (2**32 - x)*(-1)
+                # else:
+                #     x = x
+                # if y > 2**31 - 1 :
+                #     y = (2**32 - y)*(-1)
+                # else:
+                #     y = y
 
-                self.node_1_latlong = str(x*90/324e6) +',' + str(y*90/324e6)
-                self.node_1_ht = str(int(config.get('dummy_section','ALTITUDE'))/100)
+                # self.node_1_latlong = str(x*90/324e6) +',' + str(y*90/324e6)
+                self.node_1_latlong = x + ',' + y
+                self.node_1_ht = str(config1.get('dummy_section','ALTITUDE'))
 
                 print('GPS1 Data: ' + self.node_1_latlong + ', ' + self.node_1_ht )
 
             if k == 'node2' and v['is_con'] == 1:
-                with open(self.gps2_ini) as f:
-                    file_content = '[dummy_section]\n' + f.read()
+                with open(self.gps2_ini) as f2:
+                    file_content2 = '[dummy_section]\n' + f2.read()
 
-                config = configparser.ConfigParser(comment_prefixes='#', allow_no_value=True)
-                config.optionxform = lambda option: option  # preserve case for letters
-                config.read_string(file_content)
-                x = int(config.get('dummy_section','LATITUDE'))
-                y = int(config.get('dummy_section','LONGITUDE'))
-                if x > 2**31 - 1 :
-                    x = (2**32 - x)*(-1)
-                else:
-                    x = x
-                if y > 2**31 - 1 :
-                    y = (2**32 - y)*(-1)
-                else:
-                    y = y
+                config2 = configparser.RawConfigParser(comment_prefixes=';', allow_no_value=True)
+                config2.optionxform = lambda option: option  # preserve case for letters
+                config2.read_string(file_content2)
+                x = (config2.get('dummy_section','LATITUDE'))
+                y = (config2.get('dummy_section','LONGITUDE'))
+                # x = int(config2.get('dummy_section','LATITUDE'))
+                # y = int(config2.get('dummy_section','LONGITUDE'))
+                # if x > 2**31 - 1 :
+                #     x = (2**32 - x)*(-1)
+                # else:
+                #     x = x
+                # if y > 2**31 - 1 :
+                #     y = (2**32 - y)*(-1)
+                # else:
+                #     y = y
 
-                self.node_2_latlong = str(x*90/324e6) +',' + str(y*90/324e6)
-                self.node_2_ht = str(int(config.get('dummy_section','ALTITUDE'))/100)
+                # self.node_2_latlong = str(x*90/324e6) +',' + str(y*90/324e6)
+                self.node_2_latlong = x + ',' + y
+                self.node_2_ht = str(config2.get('dummy_section','ALTITUDE'))
 
                 print('GPS2 Data: ' + self.node_2_latlong + ', ' + self.node_2_ht )
 
@@ -787,6 +796,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.time_running = 0
         self.experiment_running = 0
         self.time_remaining = 0
+        self.ansi_shell_command(self.valid_penteks,'cd ' + self.pentek_header_dir + ' && ./killscript.sh &' )
         self.run_button.setText('Run')
         if self.save_scene_check == 1:
             self.save_scene()
@@ -797,11 +807,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def save_adc_data(self):
         print('Saving ADC Files to External Hardrive/s')
         if self.pent_zero_include:
-            subprocess.call('ansible pentek0 -m shell -a \"' + 'nextlook -n 0 -b' + '\" &',shell=True)
+            subprocess.call('ansible pentek0 -m shell -a \"' + 'cd /home/transceiversystem/Documents/nextlook/build && nextlook -n 0 -x 0 -b' + '\" &',shell=True)
         if self.pent_one_include:
-            subprocess.call('ansible pentek1 -m shell -a \"' + 'nextlook -n 1 -b' + '\" &',shell=True)
+            subprocess.call('ansible pentek1 -m shell -a \"' + 'cd /home/transceiversystem/Documents/nextlook/build && nextlook -n 1 -x 0 -b' + '\" &',shell=True)
         if self.pent_two_include:
-            subprocess.call('ansible pentek2 -m shell -a \"' + 'nextlook -n 2 -b' + '\" &',shell=True)
+            subprocess.call('ansible pentek2 -m shell -a \"' + 'cd /home/transceiversystem/Documents/nextlook/build && nextlook -n 2 -x 0 -b' + '\" &',shell=True)
 
     def save_scene(self):
         if self.scene_edit.text() == '':
@@ -850,6 +860,7 @@ class MainWindow(QtWidgets.QMainWindow):
         inputfile=self.nextrad_ini
         outputfile='NeXtRAD.ini'
 
+
         nextrad_ini = inputfile
         config = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
         config.optionxform = lambda option: option  # preserve case for letters
@@ -897,3 +908,28 @@ app = QtWidgets.QApplication([])
 window = MainWindow()
 window.setWindowIcon(QtGui.QIcon('icon.png'))
 app.exec_()
+
+
+#         config_pulse = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
+#         config_pulse.optionxform = lambda option: option  # preserve case for letters
+#         config_pulse.read(pulse_ini)
+
+#         pulses = config_pulse.get['PulseParameters','NUM_PRIS']
+#         pre_pulse= config_pulse.get['PulseParameters','NUM_PRIS']
+#         pri_pw = config_pulse.get['PulseParameters','NUM_PRIS']
+#         x_amp = config_pulse.get['PulseParameters','NUM_PRIS']
+#         l_amp = config_pulse.get['PulseParameters','NUM_PRIS']
+#         rex_delay = config_pulse.get['PulseParameters','NUM_PRIS']
+#         dac_delay = config_pulse.get['PulseParameters','NUM_PRIS']
+#         pulses = config_pulse.get['PulseParameters','NUM_PRIS']
+#         WAVEFORM_INDEX = 4
+# NUM_PRIS = 2000
+# PRE_PULSE = 30.0
+# PRI_PULSE_WIDTH = 0.0
+# X_AMP_DELAY = 1.6
+# L_AMP_DELAY = 0.1
+# REX_DELAY = 1.52
+# DAC_DELAY = 1
+# ADC_DELAY = 372
+# SAMPLES_PER_PRI = 2048
+# PULSES = "5.0,1001.0,5,8500.0"

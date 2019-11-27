@@ -395,7 +395,7 @@ class TCUParams(object):
 
 if __name__ == '__main__':
     hfparser = HeaderFileParser()
-    hfdir = '../nextrad_header/NeXtRAD.ini'
+    hfdir = '/home/cnc/Documents'
     test_params = {'pre_pulse': 30,
                    'x_amp_delay': 3.5,
                    'l_amp_delay': 1.0,
