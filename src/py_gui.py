@@ -73,6 +73,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.connections_ini = config.get('Files','connection')
         self.cnc_header_loc = config.get('HeaderDirects','cnc')
         self.experiment_log_file = config.get('Files','log_file')
+        self.save_directory = config.get('Files','save_folder')
         self.node_header_dir = config.get('HeaderDirects','nodes')
         self.pentek_header_dir = config.get('HeaderDirects','penteks')
         self.rhino_header_dir = config.get('HeaderDirects','rhinos')
@@ -82,11 +83,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gps0_ini = config.get('HeaderDirects','gps0') + '/gps_info.ini'
         self.gps1_ini = config.get('HeaderDirects','gps1') + '/gps_info.ini'
         self.gps2_ini = config.get('HeaderDirects','gps2') + '/gps_info.ini'
+        self.autosaving = int(config.get('Config','auto_save_default'))
+        self.map_style = int(config.get('Config','map_style_default'))
+        self.node_0_on = int(config.get('Config','node_0_default'))
+        self.node_1_on = int(config.get('Config','node_1_default'))
+        self.node_2_on = int(config.get('Config','node_2_default'))
 
         print('NeXtRAD Header: ' + self.nextrad_ini)
 
         #State Flags
-        self.autosaving = 0 #Autosaving feature off by default
+        #self.autosaving = 0 #Autosaving feature off by default
         self.current_time = 0
         self.stop_timer = 0
         self.ansi_running = 0
@@ -109,7 +115,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.cam0_include = 0
         self.cam1_include = 0
         self.cam2_include = 0
-        self.map_style = 0
+        self.abort_flag = 0
+        #self.map_style = 0
 
 
         #Initialisers
@@ -196,12 +203,20 @@ class MainWindow(QtWidgets.QMainWindow):
         #Checkboxes
         self.node_0_disable = QtWidgets.QCheckBox("Node 0",self)
         self.node_0_disable.stateChanged.connect(self.disable_node0)
+        if self.node_0_on == 1:
+            self.node_0_disable.setChecked(True)
         self.node_1_disable = QtWidgets.QCheckBox("Node 1",self)
         self.node_1_disable.stateChanged.connect(self.disable_node1)
+        if self.node_1_on == 1:
+            self.node_1_disable.setChecked(True)
         self.node_2_disable = QtWidgets.QCheckBox("Node 2",self)
         self.node_2_disable.stateChanged.connect(self.disable_node2)
+        if self.node_2_on == 1:
+            self.node_2_disable.setChecked(True)
         self.auto_save = QtWidgets.QCheckBox("Autosave",self)
         self.auto_save.stateChanged.connect(self.auto_saver)
+        if self.autosaving == 1:
+            self.auto_save.setChecked(True)
         #Connection Stats
         #Penteks
         # self.pent_1 = QLabel('Pentek 0')
@@ -574,12 +589,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def abort_experiment(self):
         print('Aborting Experiment!')
+        self.abort_flag = 1
         self.time_running = 0
         self.time_remaining = 0
         self.experiment_running = 0
         self.ansi_running = 0
         self.ansi_shell_command(self.valid_penteks,'cd ' + self.pentek_header_dir + ' && ./killscript.sh &' )
+        self.ansi_shell_command(self.valid_nodes,'export PYTHONPATH=/home/nextrad/Documents/tcu_stuff/harpoon/ && cd ' + self.node_header_dir + ' && nohup ./tcu_abort_script.sh' )
         self.run_button.setText('Run')
+
+    def save_folder(self):
+        print('temp')
 
     def enter_target_details(self):
         if self.target_details.text() != '':
@@ -792,17 +812,19 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.experiment_running = 0
                 self.time_remaining = 0
                 self.save_scene_check = 0
+                
 
         self.time_running = 0
         self.experiment_running = 0
         self.time_remaining = 0
         self.ansi_shell_command(self.valid_penteks,'cd ' + self.pentek_header_dir + ' && ./killscript.sh &' )
         self.run_button.setText('Run')
-        if self.save_scene_check == 1:
-            self.save_scene()
-        if self.autosaving == 1:
+        #if self.save_scene_check == 1:
+            #self.save_scene()
+        if self.autosaving == 1 and self.abort_flag == 0:
             time.sleep(1)
             self.save_adc_data()
+        self.abort_flag = 0
 
     def save_adc_data(self):
         print('Saving ADC Files to External Hardrive/s')
@@ -812,6 +834,7 @@ class MainWindow(QtWidgets.QMainWindow):
             subprocess.call('ansible pentek1 -m shell -a \"' + 'cd /home/transceiversystem/Documents/nextlook/build && nextlook -n 1 -x 0 -b' + '\" &',shell=True)
         if self.pent_two_include:
             subprocess.call('ansible pentek2 -m shell -a \"' + 'cd /home/transceiversystem/Documents/nextlook/build && nextlook -n 2 -x 0 -b' + '\" &',shell=True)
+        self.save_scene()
 
     def save_scene(self):
         if self.scene_edit.text() == '':
@@ -844,6 +867,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.save_scene_check = 0
                 self.scene_edit.setText('')
                 csvfile.write(experiment_log + '\n')
+            
+        copy(self.experiment_log_file, self.save_directory)
 
     def run_experiment(self):
         if  self.time_running == 0 and self.experiment_running == 0:
@@ -908,28 +933,3 @@ app = QtWidgets.QApplication([])
 window = MainWindow()
 window.setWindowIcon(QtGui.QIcon('icon.png'))
 app.exec_()
-
-
-#         config_pulse = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
-#         config_pulse.optionxform = lambda option: option  # preserve case for letters
-#         config_pulse.read(pulse_ini)
-
-#         pulses = config_pulse.get['PulseParameters','NUM_PRIS']
-#         pre_pulse= config_pulse.get['PulseParameters','NUM_PRIS']
-#         pri_pw = config_pulse.get['PulseParameters','NUM_PRIS']
-#         x_amp = config_pulse.get['PulseParameters','NUM_PRIS']
-#         l_amp = config_pulse.get['PulseParameters','NUM_PRIS']
-#         rex_delay = config_pulse.get['PulseParameters','NUM_PRIS']
-#         dac_delay = config_pulse.get['PulseParameters','NUM_PRIS']
-#         pulses = config_pulse.get['PulseParameters','NUM_PRIS']
-#         WAVEFORM_INDEX = 4
-# NUM_PRIS = 2000
-# PRE_PULSE = 30.0
-# PRI_PULSE_WIDTH = 0.0
-# X_AMP_DELAY = 1.6
-# L_AMP_DELAY = 0.1
-# REX_DELAY = 1.52
-# DAC_DELAY = 1
-# ADC_DELAY = 372
-# SAMPLES_PER_PRI = 2048
-# PULSES = "5.0,1001.0,5,8500.0"
