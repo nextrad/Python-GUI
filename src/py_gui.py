@@ -18,6 +18,7 @@ import subprocess
 import ast
 import re
 from shutil import copyfile, copy
+import shutil
 from suitable import Api
 from getpass import getpass
 
@@ -75,6 +76,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.experiment_log_file = config.get('Files','log_file')
         self.save_directory = config.get('Files','save_folder')
         self.node_header_dir = config.get('HeaderDirects','nodes')
+        self.image_directory = config.get('HeaderDirects','save_imgs')
         self.pentek_header_dir = config.get('HeaderDirects','penteks')
         self.rhino_header_dir = config.get('HeaderDirects','rhinos')
         self.gpsdo_header_dir = config.get('HeaderDirects','gpsdos')
@@ -135,6 +137,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.node0_location_name = ''
         self.experiment_name = ''
         self.target_description = ''
+        self.start_time = ''
+        self.experiment_start_string = ''
 
         self.create_host_dict()
 
@@ -156,7 +160,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.lbl_experi_name = QtWidgets.QLabel('Experiment Description:')
         self.lbl_trgt_latlong = QtWidgets.QLabel('Target (Lat,Long):')
         self.lbl_scene = QtWidgets.QLabel('Scene Notes:')
-        self.lbl_timer = QtWidgets.QLabel('0')
+        self.lbl_timer = QtWidgets.QLabel('0') 
+        timer_font = QtGui.QFont('Open Sans',20, QtGui.QFont.Bold)
+        self.lbl_timer.setFont(timer_font)
+        self.lbl_timer.setAlignment(Qt.Qt.AlignCenter)
+        #self.lbl_timer.setFont(18)
         self.lbl_cnc = QtWidgets.QLabel('CNC')
         self.pent_zero = QtWidgets.QLabel('Pentek 0')
         self.pent_one = QtWidgets.QLabel('Pentek 1')
@@ -169,6 +177,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.node_two = QtWidgets.QLabel('Node 2')
         self.lbl_cnc = QtWidgets.QLabel('CNC')
         self.lbl_ntp = QtWidgets.QLabel('NTP')
+        self.lbl_bullet_0_tx = QtWidgets.QLabel('Bullet 0 TX     ')
+        self.lbl_bullet_1_tx = QtWidgets.QLabel('Bullet 1 TX     ')
+        self.lbl_bullet_2_tx = QtWidgets.QLabel('Bullet 2 TX     ')
+        self.lbl_bullet_0_rx = QtWidgets.QLabel('Bullet 0 RX     ')
+        self.lbl_bullet_1_rx = QtWidgets.QLabel('Bullet 1 RX     ')
+        self.lbl_bullet_2_rx = QtWidgets.QLabel('Bullet 2 RX     ')
+
+
         # - Pulse Parameters
         self.lbl_rt = QtWidgets.QLabel('Length: ' + str(self.time_remaining) + 's')
         self.lbl_fc = QtWidgets.QLabel('Freq: ' + str(self.bands))
@@ -222,60 +238,202 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.pent_1 = QLabel('Pentek 0')
         # self.pent_2 = QLabel('Pentek 0')
 
-        #Layout Setup
+        #images
+        self.quickview_image_refresh()
 
         self.view = QtWebEngineWidgets.QWebEngineView()
 
 # load .html file
         self.view.load(QtCore.QUrl.fromLocalFile(os.path.abspath('map.html')))
 
+        self.columna = QtWidgets.QGroupBox()
+        #groupbox.setCheckable(True)
+        layout.addWidget(self.columna,0,0)
+        self.abox = QtWidgets.QVBoxLayout()
+        self.columna.setLayout(self.abox)
 
-        layout.addWidget(self.lbl_timer,0,1)
-        layout.addWidget(self.auto_save,0,2)
-        layout.addWidget(self.save_button,0,3)
+
+
+        self.columnb = QtWidgets.QGroupBox()
+        #groupbox.setCheckable(True)
+        layout.addWidget(self.columnb,0,1)
+        self.bbox = QtWidgets.QVBoxLayout()
+        self.columnb.setLayout(self.bbox)
+
+        self.mid = QtWidgets.QGroupBox('Target and Geometry')
+        #groupbox.setCheckable(True)
+        self.bbox.addWidget(self.mid)
+        self.midbox = QtWidgets.QGridLayout()
+        self.mid.setLayout(self.midbox)
+
+        self.columnd = QtWidgets.QGroupBox()
+        #groupbox.setCheckable(True)
+        layout.addWidget(self.columnd,0,0)
+        self.dbox = QtWidgets.QVBoxLayout()
+        self.columnd.setLayout(self.dbox)
+
+        self.vids = QtWidgets.QGroupBox("Cameras")
+        #groupbox.setCheckable(True)
+        self.dbox.addWidget(self.vids)
+        self.vidbox = QtWidgets.QGridLayout()
+        #self.vidbox.addStretch(1)
+        self.vids.setLayout(self.vidbox)
+
+        self.columnc = QtWidgets.QGroupBox()
+        #groupbox.setCheckable(True)
+        layout.addWidget(self.columnc,0,2)
+        self.cbox = QtWidgets.QVBoxLayout()
+
+        self.columnc.setLayout(self.cbox)
+
+
+        self.runs = QtWidgets.QGroupBox("Run Experiment")
+        #groupbox.setCheckable(True)
+        self.cbox.addWidget(self.runs)
+        self.veepbox = QtWidgets.QVBoxLayout()
+        self.veepbox.addStretch(1)
+        self.runs.setLayout(self.veepbox)
+
+        self.groupbox = QtWidgets.QGroupBox("Radar Control")
+        #groupbox.setCheckable(True)
+        self.cbox.addWidget(self.groupbox)
+        self.vbox = QtWidgets.QVBoxLayout()
+        self.groupbox.setLayout(self.vbox)
+
+        self.pps = QtWidgets.QGroupBox("Pulse Parameters")
+        #groupbox.setCheckable(True)
+        self.cbox.addWidget(self.pps)
+        self.veebox = QtWidgets.QVBoxLayout()
+        self.pps.setLayout(self.veebox)
+
+
+
+
+
+        self.veepbox.addWidget(self.lbl_timer)
+        self.veepbox.addWidget(self.run_button)
+
+        self.vbox.addWidget(self.abort_button)
+        self.vbox.addWidget(self.pulses_button)
+        self.vbox.addWidget(self.save_button)
+        self.vbox.addWidget(self.auto_save)
+
+        self.cam0 = QtWebEngineWidgets.QWebEngineView()
+        self.cam0.setUrl(QtCore.QUrl('https://www.youtube.com/watch?v=avaSdC0QOUM'))
+        self.vidbox.addWidget(self.cam0,0,0)
+
+        self.cam1 = QtWebEngineWidgets.QWebEngineView()
+        self.cam1.setUrl(QtCore.QUrl('https://www.youtube.com/watch?v=6fr87wPvNIs'))
+        self.vidbox.addWidget(self.cam1,1,0)
+
+        self.cam2 = QtWebEngineWidgets.QWebEngineView()
+        self.cam2.setUrl(QtCore.QUrl('https://www.youtube.com/watch?v=6UgDdOh--W4'))
+        self.vidbox.addWidget(self.cam2,2,0)
+
+        self.veebox.addWidget(self.lbl_rt)
+        self.veebox.addWidget(self.lbl_fc)
+        self.veebox.addWidget(self.lbl_pri)
+        self.veebox.addWidget(self.lbl_pw)
+        self.veebox.addWidget(self.lbl_pol)
+
+
+
+
+
+        #layout.addWidget(self.lbl_timer,0,1)
+
         #layout.addWidget(self.text,0,0,1,2)
 
-        layout.addWidget(self.run_button,2,0)
-        layout.addWidget(self.abort_button,3,0)
-        layout.addWidget(self.pulses_button,4,0)
-        layout.addWidget(self.lbl_rt,5,0)
-        layout.addWidget(self.lbl_fc,6,0)
-        layout.addWidget(self.lbl_pri,7,0)
-        layout.addWidget(self.lbl_pw,8,0)
-        layout.addWidget(self.lbl_pol,9,0)
+        #layout.addWidget(self.run_button,2,0)
 
-        layout.addWidget(self.lbl_experi_name,1,1)
-        layout.addWidget(self.experiment_name_edit,1,2)
-        layout.addWidget(self.description_accept,1,3)
 
-        layout.addWidget(self.view,2,1,15,3)
-        layout.addWidget(self.map_style_button,16,1)
+        self.midbox.addWidget(self.lbl_experi_name,0,0)
+        self.midbox.addWidget(self.experiment_name_edit,0,1)
+        self.midbox.addWidget(self.description_accept,0,2)
 
-        layout.addWidget(self.target_details,17,2)
-        layout.addWidget(self.lbl_trgt_latlong,17,1)
-        layout.addWidget(self.target_accept,17,3)
+        self.midbox.addWidget(self.view,1,0,10,3)
+        self.midbox.addWidget(self.map_style_button,10,0)
 
-        layout.addWidget(self.lbl_scene,18,1)
-        layout.addWidget(self.scene_edit,18,2,1,2)
+        self.midbox.addWidget(self.lbl_trgt_latlong,11,0)
+        self.midbox.addWidget(self.target_details,11,1)
+        self.midbox.addWidget(self.target_accept,11,2)
+
+        self.midbox.addWidget(self.lbl_scene,12,0)
+        self.midbox.addWidget(self.scene_edit,12,1,1,2)
         #layout.addWidget(self.scene_accept,18,3)
 
-        layout.addWidget(self.lbl_cnc,1,4)
-        layout.addWidget(self.lbl_ntp,2,4)
+        self.connects = QtWidgets.QGroupBox('Network')
+        #groupbox.setCheckable(True)
+        self.cbox.addWidget(self.connects)
+        self.conbox = QtWidgets.QGridLayout()
+        self.connects.setLayout(self.conbox)
 
-        layout.addWidget(self.node_0_disable,3,4)
-        layout.addWidget(self.pent_zero,4,4)
-        layout.addWidget(self.node_zero,5,4)
-        layout.addWidget(self.rhino_zero,6,4)
+        self.conbox.addWidget(self.lbl_cnc,0,0)
+        self.conbox.addWidget(self.lbl_ntp,0,1)
 
-        layout.addWidget(self.node_1_disable,7,4)
-        layout.addWidget(self.pent_one,8,4)
-        layout.addWidget(self.node_one,9,4)
-        layout.addWidget(self.rhino_one,10,4)
+        self.conbox.addWidget(self.lbl_bullet_0_tx,1,0)
+        self.conbox.addWidget(self.lbl_bullet_0_rx,2,0)
 
-        layout.addWidget(self.node_2_disable,11,4)
-        layout.addWidget(self.pent_two,12,4)
-        layout.addWidget(self.node_two,13,4)
-        layout.addWidget(self.rhino_two,14,4)
+        self.conbox.addWidget(self.lbl_bullet_1_tx,1,1)
+        self.conbox.addWidget(self.lbl_bullet_1_rx,2,1)
+
+        self.conbox.addWidget(self.lbl_bullet_2_tx,1,2)
+        self.conbox.addWidget(self.lbl_bullet_2_rx,2,2)
+
+        self.conbox.addWidget(self.node_0_disable,3,0)
+        self.conbox.addWidget(self.pent_zero,4,0)
+        self.conbox.addWidget(self.node_zero,5,0)
+        self.conbox.addWidget(self.rhino_zero,6,0)
+
+        # layout.addWidget(self.n0ch0,7,4,1,1)
+        # layout.addWidget(self.n0ch1,8,4,1,1)
+        # layout.addWidget(self.n0ch2,9,4,1,1)
+
+        self.conbox.addWidget(self.node_1_disable,3,1)
+        self.conbox.addWidget(self.pent_one,4,1)
+        self.conbox.addWidget(self.node_one,5,1)
+        self.conbox.addWidget(self.rhino_one,6,1)
+
+        # layout.addWidget(self.n1ch0,7,5,1,1)
+        # layout.addWidget(self.n1ch1,8,5,1,1)
+        # layout.addWidget(self.n1ch2,9,5,1,1)
+
+        self.conbox.addWidget(self.node_2_disable,3,2)
+        self.conbox.addWidget(self.pent_two,4,2)
+        self.conbox.addWidget(self.node_two,5,2)
+        self.conbox.addWidget(self.rhino_two,6,2)
+
+        # layout.addWidget(self.n2ch0,7,6,1,1)
+        # layout.addWidget(self.n2ch1,8,6,1,1)
+        # layout.addWidget(self.n2ch2,9,6,1,1)
+
+        self.ims = QtWidgets.QGroupBox('Quickviews')
+        #groupbox.setCheckable(True)
+        self.cbox.addWidget(self.ims)
+        self.imbox = QtWidgets.QGridLayout()
+        self.ims.setLayout(self.imbox)
+
+        self.lbl_ims_node0 = QtWidgets.QLabel('Node0')
+        self.lbl_ims_node1 = QtWidgets.QLabel('Node1')
+        self.lbl_ims_node2 = QtWidgets.QLabel('Node2')
+        self.lbl_ims_ch0 = QtWidgets.QLabel('L')
+        self.lbl_ims_ch1 = QtWidgets.QLabel('XV')
+        self.lbl_ims_ch2 = QtWidgets.QLabel('XH')
+
+        self.lbl_ims_node0.setAlignment(Qt.Qt.AlignCenter)
+        self.lbl_ims_node1.setAlignment(Qt.Qt.AlignCenter)
+        self.lbl_ims_node2.setAlignment(Qt.Qt.AlignCenter)
+        self.lbl_ims_ch0.setAlignment(Qt.Qt.AlignCenter)
+        self.lbl_ims_ch1.setAlignment(Qt.Qt.AlignCenter)
+        self.lbl_ims_ch2.setAlignment(Qt.Qt.AlignCenter)
+
+        self.update_quickview_ims()
+
+        self.abox.addStretch(1)
+        self.cbox.addStretch(1)
+ 
+
+
 
 
         w = QtWidgets.QWidget()
@@ -294,7 +452,96 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.check_state)
+        self.timer.timeout.connect(self.quickview_image_refresh)
+        self.timer.timeout.connect(self.update_quickview_ims)
+        self.timer.timeout.connect(self.update_video_stream)
         self.timer.start(500)
+
+    def update_quickview_ims(self):
+
+        self.imbox.addWidget(self.lbl_ims_node0,0,0)
+        self.imbox.addWidget(self.lbl_ims_node1,0,1)
+        self.imbox.addWidget(self.lbl_ims_node2,0,2)
+        self.imbox.addWidget(self.lbl_ims_ch0,1,3)
+        self.imbox.addWidget(self.lbl_ims_ch1,2,3)
+        self.imbox.addWidget(self.lbl_ims_ch2,3,3)
+
+        self.imbox.addWidget(self.n0ch0,1,0)
+        self.imbox.addWidget(self.n0ch1,2,0)
+        self.imbox.addWidget(self.n0ch2,3,0)
+        self.imbox.addWidget(self.n1ch0,1,1)
+        self.imbox.addWidget(self.n1ch1,2,1)
+        self.imbox.addWidget(self.n1ch2,3,1)
+        self.imbox.addWidget(self.n2ch0,1,2)
+        self.imbox.addWidget(self.n2ch1,2,2)
+        self.imbox.addWidget(self.n2ch2,3,2)
+
+    def update_video_stream(self):
+        if self.host_dict['ipcam0']['is_con'] == 0:
+            self.vidbox.addWidget(self.n1ch2,0,0)
+        else:
+            self.cam0 = QtWebEngineWidgets.QWebEngineView()
+            self.cam0.setUrl(QtCore.QUrl('https://www.youtube.com/watch?v=avaSdC0QOUM'))
+            self.vidbox.addWidget(self.cam0,0,0)
+
+    def quickview_image_refresh(self):
+        self.n0ch0 = QtWidgets.QLabel(self)
+        pixmap = QtGui.QPixmap('./quickview_images/Range-Time-Intensity-ch0-n0.jpg')
+        pixmap = pixmap.scaled(70, 70, QtCore.Qt.KeepAspectRatio)
+        self.n0ch0.setPixmap(pixmap)
+        #self.resize(pixmap.width(), pixmap.height())
+
+
+        self.n0ch1 = QtWidgets.QLabel(self)
+        pixmap = QtGui.QPixmap('./quickview_images/Range-Time-Intensity-ch1-n0.jpg')
+        pixmap = pixmap.scaled(70, 70, QtCore.Qt.KeepAspectRatio)
+        self.n0ch1.setPixmap(pixmap)
+        #self.resize(pixmap.width(), pixmap.height())
+    
+        self.n0ch2 = QtWidgets.QLabel(self)
+        pixmap = QtGui.QPixmap('./quickview_images/Range-Time-Intensity-ch2-n0.jpg')
+        pixmap = pixmap.scaled(70, 70, QtCore.Qt.KeepAspectRatio)
+        self.n0ch2.setPixmap(pixmap)
+        #self.resize(pixmap.width(), pixmap.height())
+
+        self.n1ch0 = QtWidgets.QLabel(self)
+        pixmap = QtGui.QPixmap('./quickview_images/Range-Time-Intensity-ch0-n1.jpg')
+        pixmap = pixmap.scaled(70, 70, QtCore.Qt.KeepAspectRatio)
+        self.n1ch0.setPixmap(pixmap)
+        #self.resize(pixmap.width(), pixmap.height())
+
+        self.n1ch1 = QtWidgets.QLabel(self)
+        pixmap = QtGui.QPixmap('./quickview_images/Range-Time-Intensity-ch1-n1.jpg')
+        pixmap = pixmap.scaled(70, 70, QtCore.Qt.KeepAspectRatio)
+        self.n1ch1.setPixmap(pixmap)
+        #self.resize(pixmap.width(), pixmap.height())
+    
+        self.n1ch2 = QtWidgets.QLabel(self)
+        pixmap = QtGui.QPixmap('./quickview_images/Range-Time-Intensity-ch2-n1.jpg')
+        pixmap = pixmap.scaled(70, 70, QtCore.Qt.KeepAspectRatio)
+        self.n1ch2.setPixmap(pixmap)
+        #self.resize(pixmap.width(), pixmap.height())
+
+        self.n2ch0 = QtWidgets.QLabel(self)
+        pixmap = QtGui.QPixmap('./quickview_images/Range-Time-Intensity-ch0-n2.jpg')
+        pixmap = pixmap.scaled(70, 70, QtCore.Qt.KeepAspectRatio)
+        self.n2ch0.setPixmap(pixmap)
+        #self.resize(pixmap.width(), pixmap.height())
+
+        self.n2ch1 = QtWidgets.QLabel(self)
+        pixmap = QtGui.QPixmap('./quickview_images/Range-Time-Intensity-ch1-n2.jpg')
+        pixmap = pixmap.scaled(70, 70, QtCore.Qt.KeepAspectRatio)
+        self.n2ch1.setPixmap(pixmap)
+        #self.resize(pixmap.width(), pixmap.height())
+
+        self.n2ch2 = QtWidgets.QLabel(self)
+        pixmap = QtGui.QPixmap('./quickview_images/Range-Time-Intensity-ch2-n2.jpg')
+        pixmap = pixmap.scaled(70, 70, QtCore.Qt.KeepAspectRatio)
+        self.n2ch2.setPixmap(pixmap)
+        #self.resize(pixmap.width(), pixmap.height())
+
+        
+        # #Layout Setup
 
     def init_nextheader_values(self):
 
@@ -451,7 +698,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.create_host_dict()
 
         if self.time_running == 0 and self.experiment_running == 0:
-            self.lbl_timer.setText('Not Running')
+            self.lbl_timer.setText('  Not Running  ')
             self.lbl_timer.setStyleSheet('color: black')
             self.run_button.setStyleSheet("background-color: green")
         elif self.time_running == 1 and self.experiment_running == 0:
@@ -579,6 +826,60 @@ class MainWindow(QtWidgets.QMainWindow):
         except:
             self.rhino_two.setStyleSheet('color: gray')
             self.rhino_two.setText('Missing config')
+
+        try:
+            if self.host_dict['tx_bullet0']['is_con'] == 0:
+                self.lbl_bullet_0_tx.setStyleSheet('color: red')
+            else:
+                self.lbl_bullet_0_tx.setStyleSheet('color: green')
+        except:
+            self.lbl_bullet_0_tx.setStyleSheet('color: gray')
+            self.lbl_bullet_0_tx.setText('Missing config')
+
+        try:
+            if self.host_dict['rx_bullet0']['is_con'] == 0:
+                self.lbl_bullet_0_rx.setStyleSheet('color: red')
+            else:
+                self.lbl_bullet_0_rx.setStyleSheet('color: green')
+        except:
+            self.lbl_bullet_0_rx.setStyleSheet('color: gray')
+            self.lbl_bullet_0_rx.setText('Missing config')
+
+        try:
+            if self.host_dict['tx_bullet1']['is_con'] == 0:
+                self.lbl_bullet_1_tx.setStyleSheet('color: red')
+            else:
+                self.lbl_bullet_1_tx.setStyleSheet('color: green')
+        except:
+            self.lbl_bullet_1_tx.setStyleSheet('color: gray')
+            self.lbl_bullet_1_tx.setText('Missing config')
+
+        try:
+            if self.host_dict['rx_bullet0']['is_con'] == 0:
+                self.lbl_bullet_1_rx.setStyleSheet('color: red')
+            else:
+                self.lbl_bullet_1_rx.setStyleSheet('color: green')
+        except:
+            self.lbl_bullet_1_rx.setStyleSheet('color: gray')
+            self.lbl_bullet_1_rx.setText('Missing config')
+
+        try:
+            if self.host_dict['tx_bullet2']['is_con'] == 0:
+                self.lbl_bullet_2_tx.setStyleSheet('color: red')
+            else:
+                self.lbl_bullet_2_tx.setStyleSheet('color: green')
+        except:
+            self.lbl_bullet_2_tx.setStyleSheet('color: gray')
+            self.lbl_bullet_2_tx.setText('Missing config')
+
+        try:
+            if self.host_dict['rx_bullet2']['is_con'] == 0:
+                self.lbl_bullet_2_rx.setStyleSheet('color: red')
+            else:
+                self.lbl_bullet_2_rx.setStyleSheet('color: green')
+        except:
+            self.lbl_bullet_2_rx.setStyleSheet('color: gray')
+            self.lbl_bullet_2_rx.setText('Missing config')
 
     def run_quickview(self):
         #if self.plot_is_active == 1:
@@ -783,7 +1084,7 @@ class MainWindow(QtWidgets.QMainWindow):
         print('Experiment Running!')
         while delta>1:
             if self.time_running == 1:
-                self.lbl_timer.setText('Countdown: ' + str(delta))
+                self.lbl_timer.setText(' Countdown: ' + str(delta) + '  ')
                 delta = int((self.start_time - datetime.datetime.now()).total_seconds())
                 time.sleep(1)
 
@@ -801,7 +1102,7 @@ class MainWindow(QtWidgets.QMainWindow):
         while self.time_remaining>1:
             if self.experiment_running == 1:
                 #print(str(self.time_remaining))
-                self.lbl_timer.setText('Time Remaining: ' + str(int(self.time_remaining/1000000)))
+                self.lbl_timer.setText(' Running: ' + str(int(self.time_remaining/1000000)) + ' ')
                 self.time_remaining = self.time_remaining - 1000000
                 time.sleep(1)
                 self.save_scene_check = 1
@@ -834,18 +1135,18 @@ class MainWindow(QtWidgets.QMainWindow):
             subprocess.call('ansible pentek1 -m shell -a \"' + 'cd /home/transceiversystem/Documents/nextlook/build && nextlook -n 1 -x 0 -b' + '\" &',shell=True)
         if self.pent_two_include:
             subprocess.call('ansible pentek2 -m shell -a \"' + 'cd /home/transceiversystem/Documents/nextlook/build && nextlook -n 2 -x 0 -b' + '\" &',shell=True)
+
         self.save_scene()
 
     def save_scene(self):
+
         if self.scene_edit.text() == '':
             self.scene_edit.setText('No Notes. Change in text file if necessary.')
 
-        experiment_log = str(self.start_time.year)[2:] + '_' + \
-        str(self.start_time.month) + '_' + \
-        str(self.start_time.day) + '_' + \
-        str(self.start_time.hour) + '_' + \
-        str(self.start_time.minute) + '_' + \
-        str(self.start_time.second) + ';' + \
+        if (self.start_time) == 0:
+            self.experiment_start_string = 'SeeHeader' + str(datetime.datetime.now())
+
+        experiment_log = self.experiment_start_string + ';' + \
         str(self.bands) + ';' + \
         str(self.pols) + ';' + \
         str(self.pulse_width) + ';' + \
@@ -867,8 +1168,27 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.save_scene_check = 0
                 self.scene_edit.setText('')
                 csvfile.write(experiment_log + '\n')
-            
+
         copy(self.experiment_log_file, self.save_directory)
+
+        directory = self.save_directory + '/' + self.experiment_start_string
+        image_directory = directory + '/quicklook_images'
+        os.mkdir(directory)
+        os.mkdir(image_directory)
+        self.copytree(self.image_directory, image_directory)
+
+        copy(self.nextrad_ini,directory)
+
+        print('Save Folder: ' + self.experiment_start_string)
+
+    def copytree(self,src, dst, symlinks=False, ignore=None):
+        for item in os.listdir(src):
+            s = os.path.join(src, item)
+            d = os.path.join(dst, item)
+            if os.path.isdir(s):
+                shutil.copytree(s, d, symlinks, ignore)
+            else:
+                shutil.copy2(s, d)
 
     def run_experiment(self):
         if  self.time_running == 0 and self.experiment_running == 0:
@@ -893,6 +1213,13 @@ class MainWindow(QtWidgets.QMainWindow):
         delay = config.get('Timing','STARTTIMESECS')
 
         self.start_time = datetime.datetime.now() + datetime.timedelta(seconds=int(delay))
+        self.experiment_start_string = str(self.start_time.year)[2:] + '_' + \
+            str(self.start_time.month) + '_' + \
+            str(self.start_time.day) + '_' + \
+            str(self.start_time.hour) + '_' + \
+            str(self.start_time.minute) + '_' + \
+            str(self.start_time.second)
+
 
         config['Timing']['YEAR'] = str(self.start_time.year)
         config['Timing']['MONTH'] = str(self.start_time.month).zfill(2)
