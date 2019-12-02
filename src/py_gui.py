@@ -174,11 +174,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.show()
 
         self.timer = QtCore.QTimer(self)
+        self.imagetimer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.check_state)
-        self.timer.timeout.connect(self.quickview_image_refresh)
-        self.timer.timeout.connect(self.update_quickview_ims)
+        self.imagetimer.timeout.connect(self.quickview_image_refresh)
+        self.imagetimer.timeout.connect(self.update_quickview_ims)
         #self.timer.timeout.connect(self.update_video_stream)
         self.timer.start(500)
+        self.imagetimer.start(1000)
 
     def collate(self):
         print('TODO')
@@ -344,15 +346,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.vbox.addWidget(self.auto_save)
 
         self.cam0 = QtWebEngineWidgets.QWebEngineView()
-        self.cam0.setUrl(QtCore.QUrl('https://www.youtube.com/watch?v=avaSdC0QOUM'))
+        self.cam0.setUrl(QtCore.QUrl(''))
         self.vidbox.addWidget(self.cam0,0,0)
 
         self.cam1 = QtWebEngineWidgets.QWebEngineView()
-        self.cam1.setUrl(QtCore.QUrl('https://www.youtube.com/watch?v=6fr87wPvNIs'))
+        self.cam1.setUrl(QtCore.QUrl(''))
         self.vidbox.addWidget(self.cam1,1,0)
 
         self.cam2 = QtWebEngineWidgets.QWebEngineView()
-        self.cam2.setUrl(QtCore.QUrl('https://www.youtube.com/watch?v=6UgDdOh--W4'))
+        self.cam2.setUrl(QtCore.QUrl(''))
         self.vidbox.addWidget(self.cam2,2,0)
 
         self.cam0.resize(100, 100)
@@ -429,7 +431,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #groupbox.setCheckable(True)
         self.cbox.addWidget(self.ims)
         self.imbox = QtWidgets.QGridLayout()
-        self.ims.setLayout(self.imbox)
+        #self.ims.setLayout(self.imbox)
 
         self.lbl_ims_node0 = QtWidgets.QLabel('Node0')
         self.lbl_ims_node1 = QtWidgets.QLabel('Node1')
