@@ -118,6 +118,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.cam1_include = 0
         self.cam2_include = 0
         self.abort_flag = 0
+        self.node_0_is_on = 0
+        self.node_1_is_on = 0
+        self.node_2_is_on = 0
         #self.map_style = 0
 
 
@@ -153,6 +156,34 @@ class MainWindow(QtWidgets.QMainWindow):
         #Start the Threadpool
         self.threadpool = QtCore.QThreadPool()
         print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+
+        self.setup_layout()
+
+        self.update_quickview_ims()
+
+        self.init_nextheader_values()
+
+        state_update = Worker(self.check_state)
+        self.threadpool.start(state_update)
+
+        self.init_map()
+        self.target_details.setText(self.target_latlong)
+        self.change_map_style()
+        self.experiment_name_edit.setText(self.experiment_name)
+
+        self.show()
+
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.check_state)
+        self.timer.timeout.connect(self.quickview_image_refresh)
+        self.timer.timeout.connect(self.update_quickview_ims)
+        #self.timer.timeout.connect(self.update_video_stream)
+        self.timer.start(500)
+
+    def collate(self):
+        print('TODO')
+
+    def setup_layout(self):
 
         layout = QtWidgets.QGridLayout()
 
@@ -243,7 +274,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.view = QtWebEngineWidgets.QWebEngineView()
 
-# load .html file
+
         self.view.load(QtCore.QUrl.fromLocalFile(os.path.abspath('map.html')))
 
         self.columna = QtWidgets.QGroupBox()
@@ -251,8 +282,6 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addWidget(self.columna,0,0)
         self.abox = QtWidgets.QVBoxLayout()
         self.columna.setLayout(self.abox)
-
-
 
         self.columnb = QtWidgets.QGroupBox()
         #groupbox.setCheckable(True)
@@ -306,10 +335,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.veebox = QtWidgets.QVBoxLayout()
         self.pps.setLayout(self.veebox)
 
-
-
-
-
         self.veepbox.addWidget(self.lbl_timer)
         self.veepbox.addWidget(self.run_button)
 
@@ -330,22 +355,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.cam2.setUrl(QtCore.QUrl('https://www.youtube.com/watch?v=6UgDdOh--W4'))
         self.vidbox.addWidget(self.cam2,2,0)
 
+        self.cam0.resize(100, 100)
+        self.cam1.resize(100, 100)
+        self.cam2.resize(100, 100)
+
         self.veebox.addWidget(self.lbl_rt)
         self.veebox.addWidget(self.lbl_fc)
         self.veebox.addWidget(self.lbl_pri)
         self.veebox.addWidget(self.lbl_pw)
         self.veebox.addWidget(self.lbl_pol)
-
-
-
-
-
-        #layout.addWidget(self.lbl_timer,0,1)
-
-        #layout.addWidget(self.text,0,0,1,2)
-
-        #layout.addWidget(self.run_button,2,0)
-
 
         self.midbox.addWidget(self.lbl_experi_name,0,0)
         self.midbox.addWidget(self.experiment_name_edit,0,1)
@@ -427,35 +445,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.lbl_ims_ch1.setAlignment(Qt.Qt.AlignCenter)
         self.lbl_ims_ch2.setAlignment(Qt.Qt.AlignCenter)
 
-        self.update_quickview_ims()
 
         self.abox.addStretch(1)
         self.cbox.addStretch(1)
- 
-
-
-
 
         w = QtWidgets.QWidget()
         w.setLayout(layout)
-        self.init_nextheader_values()
-        state_update = Worker(self.check_state)
-        self.threadpool.start(state_update)
-
         self.setCentralWidget(w)
-        self.init_map()
-        self.target_details.setText(self.target_latlong)
-        self.change_map_style()
-        self.experiment_name_edit.setText(self.experiment_name)
-
-        self.show()
-
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.check_state)
-        self.timer.timeout.connect(self.quickview_image_refresh)
-        self.timer.timeout.connect(self.update_quickview_ims)
-        self.timer.timeout.connect(self.update_video_stream)
-        self.timer.start(500)
 
     def update_quickview_ims(self):
 
@@ -639,32 +635,38 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def disable_node0(self,state):
         if self.node_0_disable.isChecked():
+            self.node_0_is_on = 1
             self.pent_zero_include = 1
             self.rhino_zero_include = 1
             self.node_zero_include = 1
 
         else:
+            self.node_0_is_on = 1
             self.pent_zero_include = 0
             self.rhino_zero_include = 0
             self.node_zero_include = 0
 
     def disable_node1(self,state):
         if self.node_1_disable.isChecked():
+            self.node_1_is_on = 1
             self.pent_one_include = 1
             self.rhino_one_include = 1
             self.node_one_include = 1
         else:
+            self.node_1_is_on = 0
             self.pent_one_include = 0
             self.rhino_one_include = 0
             self.node_one_include = 0
 
     def disable_node2(self,state):
         if self.node_2_disable.isChecked():
+            self.node_2_is_on = 1
             self.pent_two_include = 1
             self.rhino_two_include = 1
             self.node_two_include = 1
 
         else:
+            self.node_2_is_on = 0
             self.pent_two_include = 0
             self.rhino_two_include = 0
             self.node_two_include = 0
@@ -1175,6 +1177,7 @@ class MainWindow(QtWidgets.QMainWindow):
         image_directory = directory + '/quicklook_images'
         os.mkdir(directory)
         os.mkdir(image_directory)
+
         self.copytree(self.image_directory, image_directory)
 
         copy(self.nextrad_ini,directory)
@@ -1240,6 +1243,11 @@ class MainWindow(QtWidgets.QMainWindow):
         config['TargetSettings']['TGT_LOCATION_LAT'] = str(eval(self.target_latlong)[0])
         config['TargetSettings']['TGT_LOCATION_LON'] = str(eval(self.target_latlong)[1])
         config['TargetSettings']['TGT_LOCATION_HT'] = self.target_ht
+
+        config['GeometrySettings']['NODE0_INCLUDE'] = str(self.node_0_is_on)
+        config['GeometrySettings']['NODE1_INCLUDE'] = str(self.node_1_is_on)
+        config['GeometrySettings']['NODE2_INCLUDE'] = str(self.node_2_is_on)
+
 
 
         #print('Experiment Start Time: ', self.start_time)
