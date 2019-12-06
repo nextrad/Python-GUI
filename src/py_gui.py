@@ -159,7 +159,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setup_layout()
 
-        self.update_quickview_ims()
+        #self.update_quickview_ims()
 
         self.init_nextheader_values()
 
@@ -174,13 +174,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.show()
 
         self.timer = QtCore.QTimer(self)
-        self.imagetimer = QtCore.QTimer(self)
+        # self.imagetimer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.check_state)
-        self.imagetimer.timeout.connect(self.quickview_image_refresh)
-        self.imagetimer.timeout.connect(self.update_quickview_ims)
+        #self.imagetimer.timeout.connect(self.quickview_image_refresh)
+        #self.imagetimer.timeout.connect(self.update_quickview_ims)
         #self.timer.timeout.connect(self.update_video_stream)
         self.timer.start(500)
-        self.imagetimer.start(1000)
+        # self.imagetimer.start(1000)
 
     def collate(self):
         print('TODO')
@@ -190,6 +190,8 @@ class MainWindow(QtWidgets.QMainWindow):
         layout = QtWidgets.QGridLayout()
 
         #GUI Text
+        general_font = QtGui.QFont('Open Sans',16)
+
         self.lbl_experi_name = QtWidgets.QLabel('Experiment Description:')
         self.lbl_trgt_latlong = QtWidgets.QLabel('Target (Lat,Long):')
         self.lbl_scene = QtWidgets.QLabel('Scene Notes:')
@@ -247,6 +249,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.experiment_name_edit = QtWidgets.QLineEdit(self)
         self.experiment_name_edit.editingFinished.connect(self.enter_description)
         self.scene_edit = QtWidgets.QLineEdit(self)
+        #self.azimuth_rotation = QtWidgets.QLineEdit(self)
         #self.scene_edit.editingFinished.connect(self.enter_scene)
 
         #Checkboxes
@@ -272,7 +275,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.pent_2 = QLabel('Pentek 0')
 
         #images
-        self.quickview_image_refresh()
+        #self.quickview_image_refresh()
 
         self.view = QtWebEngineWidgets.QWebEngineView()
 
@@ -281,13 +284,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.columna = QtWidgets.QGroupBox()
         #groupbox.setCheckable(True)
-        layout.addWidget(self.columna,0,0)
+        #layout.addWidget(self.columna,0,0)
         self.abox = QtWidgets.QVBoxLayout()
-        self.columna.setLayout(self.abox)
+        #self.columna.setLayout(self.abox)
 
         self.columnb = QtWidgets.QGroupBox()
         #groupbox.setCheckable(True)
-        layout.addWidget(self.columnb,0,1)
+        layout.addWidget(self.columnb,0,0)
         self.bbox = QtWidgets.QVBoxLayout()
         self.columnb.setLayout(self.bbox)
 
@@ -299,7 +302,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.columnd = QtWidgets.QGroupBox()
         #groupbox.setCheckable(True)
-        layout.addWidget(self.columnd,0,0)
+        #layout.addWidget(self.columnd,0,0)
         self.dbox = QtWidgets.QVBoxLayout()
         self.columnd.setLayout(self.dbox)
 
@@ -427,25 +430,25 @@ class MainWindow(QtWidgets.QMainWindow):
         # layout.addWidget(self.n2ch1,8,6,1,1)
         # layout.addWidget(self.n2ch2,9,6,1,1)
 
-        self.ims = QtWidgets.QGroupBox('Quickviews')
-        #groupbox.setCheckable(True)
-        self.cbox.addWidget(self.ims)
-        self.imbox = QtWidgets.QGridLayout()
-        #self.ims.setLayout(self.imbox)
+        # self.ims = QtWidgets.QGroupBox('Quickviews')
+        # #groupbox.setCheckable(True)
+        # #self.cbox.addWidget(self.ims)
+        # self.imbox = QtWidgets.QGridLayout()
+        # #self.ims.setLayout(self.imbox)
 
-        self.lbl_ims_node0 = QtWidgets.QLabel('Node0')
-        self.lbl_ims_node1 = QtWidgets.QLabel('Node1')
-        self.lbl_ims_node2 = QtWidgets.QLabel('Node2')
-        self.lbl_ims_ch0 = QtWidgets.QLabel('L')
-        self.lbl_ims_ch1 = QtWidgets.QLabel('XV')
-        self.lbl_ims_ch2 = QtWidgets.QLabel('XH')
+        # self.lbl_ims_node0 = QtWidgets.QLabel('Node0')
+        # self.lbl_ims_node1 = QtWidgets.QLabel('Node1')
+        # self.lbl_ims_node2 = QtWidgets.QLabel('Node2')
+        # self.lbl_ims_ch0 = QtWidgets.QLabel('L')
+        # self.lbl_ims_ch1 = QtWidgets.QLabel('XV')
+        # self.lbl_ims_ch2 = QtWidgets.QLabel('XH')
 
-        self.lbl_ims_node0.setAlignment(Qt.Qt.AlignCenter)
-        self.lbl_ims_node1.setAlignment(Qt.Qt.AlignCenter)
-        self.lbl_ims_node2.setAlignment(Qt.Qt.AlignCenter)
-        self.lbl_ims_ch0.setAlignment(Qt.Qt.AlignCenter)
-        self.lbl_ims_ch1.setAlignment(Qt.Qt.AlignCenter)
-        self.lbl_ims_ch2.setAlignment(Qt.Qt.AlignCenter)
+        # self.lbl_ims_node0.setAlignment(Qt.Qt.AlignCenter)
+        # self.lbl_ims_node1.setAlignment(Qt.Qt.AlignCenter)
+        # self.lbl_ims_node2.setAlignment(Qt.Qt.AlignCenter)
+        # self.lbl_ims_ch0.setAlignment(Qt.Qt.AlignCenter)
+        # self.lbl_ims_ch1.setAlignment(Qt.Qt.AlignCenter)
+        # self.lbl_ims_ch2.setAlignment(Qt.Qt.AlignCenter)
 
 
         self.abox.addStretch(1)
@@ -859,7 +862,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.lbl_bullet_1_tx.setText('Missing config')
 
         try:
-            if self.host_dict['rx_bullet0']['is_con'] == 0:
+            if self.host_dict['rx_bullet1']['is_con'] == 0:
                 self.lbl_bullet_1_rx.setStyleSheet('color: red')
             else:
                 self.lbl_bullet_1_rx.setStyleSheet('color: green')
@@ -1065,16 +1068,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def ansi_play(self):
         if self.ansi_running == 1:
+            self.ansi_copy(self.valid_nodes,self.nextrad_ini,self.gpsdo_header_dir)
             self.ansi_copy(self.valid_penteks,self.nextrad_ini,self.pentek_header_dir)
             #self.ansi_copy(self.valid_hosts,'~/Documents/NeXtRAD.ini')
-
-            self.ansi_copy(self.valid_nodes,self.nextrad_ini,self.gpsdo_header_dir)
             #self.ansi_copy(self.valid_rhinos,self.nextrad_ini,self.rhino_header_dir)
             self.ansi_shell_command(self.valid_penteks,'cd ' + self.pentek_header_dir + ' && ./run-cobalt.sh')
             self.ansi_running = 0
+
             self.ansi_shell_command(self.valid_nodes,'cd ' + self.node_header_dir + ' && rm NeXtRAD.ini')
+
             time.sleep(int(self.local_copy_delay))
-            copy('NeXtRAD.ini', self.cnc_header_loc + '/NeXtRAD.ini')
+            #copy('NeXtRAD.ini', self.cnc_header_loc + '/NeXtRAD.ini')
 
             self.ansi_copy(self.valid_nodes,self.nextrad_ini,self.node_header_dir)
 
@@ -1208,7 +1212,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def setup_header(self):
         inputfile=self.nextrad_ini
-        outputfile='NeXtRAD.ini'
+        outputfile=self.nextrad_ini
 
 
         nextrad_ini = inputfile

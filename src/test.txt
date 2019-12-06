@@ -1,0 +1,73 @@
+Timestamp;RF Frequency;Polarisations;Pulse Widths;PRI;Number of PRIs;Experiment;Notes
+19_12_4_11_1_49;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec 0deg;No Notes. Change in text file if necessary.
+19_12_4_11_8_17;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec -5deg;No Notes. Change in text file if necessary.
+19_12_4_11_8_17;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec -5deg;No Notes. Change in text file if necessary.
+19_12_4_11_25_1;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec +5deg;No Notes. Change in text file if necessary.
+19_12_4_11_25_1;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec +5deg;No Notes. Change in text file if necessary.
+19_12_4_11_26_43;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec +10deg;No Notes. Change in text file if necessary.
+19_12_4_11_26_43;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec +10deg;No Notes. Change in text file if necessary.
+19_12_4_11_26_43;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec +10deg;No Notes. Change in text file if necessary.
+19_12_4_11_29_14;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec -5deg;No Notes. Change in text file if necessary.
+19_12_4_11_29_14;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec -5deg;No Notes. Change in text file if necessary.
+19_12_4_11_29_14;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec -5deg;No Notes. Change in text file if necessary.
+19_12_4_11_31_11;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec -10deg;No Notes. Change in text file if necessary.
+19_12_4_11_31_11;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec -10deg;No Notes. Change in text file if necessary.
+19_12_4_15_2_49;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   0deg;No Notes. Change in text file if necessary.
+19_12_4_15_8_31;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   -20deg;No Notes. Change in text file if necessary.
+19_12_4_15_11_5;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   -15deg;No Notes. Change in text file if necessary.
+19_12_4_15_15_10;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   -10deg;No Notes. Change in text file if necessary.
+19_12_4_15_17_59;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   -5 deg;No Notes. Change in text file if necessary.
+19_12_4_15_20_6;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   0 deg;No Notes. Change in text file if necessary.
+19_12_4_15_27_53;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   0 deg;No Notes. Change in text file if necessary.
+19_12_4_15_33_27;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   -20 deg;No Notes. Change in text file if necessary.
+19_12_4_15_36_9;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   -15 deg;No Notes. Change in text file if necessary.
+19_12_4_15_38_51;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   -10 deg;No Notes. Change in text file if necessary.
+19_12_4_15_40_38;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   -5 deg;No Notes. Change in text file if necessary.
+19_12_4_15_41_31;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   -5 deg;No Notes. Change in text file if necessary.
+19_12_4_15_43_44;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   0 deg;No Notes. Change in text file if necessary.
+19_12_4_15_48_26;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +5 deg;No Notes. Change in text file if necessary.
+19_12_4_15_51_54;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +10 deg;No Notes. Change in text file if necessary.
+19_12_4_15_55_47;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +10 deg;No Notes. Change in text file if necessary.
+19_12_4_15_57_47;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +15 deg;No Notes. Change in text file if necessary.
+19_12_4_15_59_34;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +20 deg;No Notes. Change in text file if necessary.
+19_12_5_10_48_59;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +20 deg;No Notes. Change in text file if necessary.
+19_12_5_10_50_8;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +20 deg;No Notes. Change in text file if necessary.
+19_12_5_10_51_30;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +20 deg;No Notes. Change in text file if necessary.
+19_12_5_11_3_50;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +20 deg;No Notes. Change in text file if necessary.
+19_12_5_11_5_44;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +20 deg;No Notes. Change in text file if necessary.
+19_12_5_11_7_17;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +20 deg;No Notes. Change in text file if necessary.
+19_12_5_11_8_16;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +20 deg;No Notes. Change in text file if necessary.
+19_12_5_11_8_49;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +20 deg;No Notes. Change in text file if necessary.
+19_12_5_11_14_22;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +20 deg;No Notes. Change in text file if necessary.
+19_12_5_11_31_16;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +20 deg;No Notes. Change in text file if necessary.
+19_12_5_11_40_12;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];5000;RR 5usec;   +20 deg;No Notes. Change in text file if necessary.
+19_12_5_11_54_41;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];200000;RR 5usec;   +20 deg;Fast boat entering beam at start, boat heading SI to RR, slow rib entering from harbour side,  
+19_12_5_12_5_34;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];200000;Track Sail boat;exp = manual tracking Tx ant onto slow sailoat moving west;  RHIB on inbound radial -may be inside blind zone; 
+19_12_5_12_24_53;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];200000;Track Sail boat;No Notes. Change in text file if necessary.
+19_12_5_12_35_6;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];200000;Track Sail boat;kayak armada approaching RR from East; Unknown vessel circling RR
+19_12_5_12_41_3;[8500.0, 1300.0];[4, 0];[5.0, 5.0];[1001.0, 1001.0];200000;kayaks  5usec;   +20 deg;kayak armada heading back to port; n0 manual tracking; some Tx obstruction from IMP pipe in front of Tx antenna
+19_12_5_14_18_36;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Matrice600 over PHXb;drone over PHXb, birds intercepting drone, hovering aover buoy, moves at 50s, 
+19_12_5_14_24_1;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Matrice600 over PHXb;sail boatcrossing to RR, 
+19_12_5_14_29_53;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Matrice600 over PHXb;outbound, seagulls intercepting, radial track to starboard position,
+19_12_5_14_35_46;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Matrice600 over PHXb;Heading outbound, rib entering the beam due SE, GPSDO locking, boat heading to harbour
+19_12_5_14_40_45;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Matrice600 over PHXb;GPSDO almost locked at beginning, node2 fired early, sail boat crossing heading W, 
+19_12_5_14_46_26;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Matrice600 over PHXb;No Notes. Change in text file if necessary.
+19_12_5_15_1_12;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Sail Band - Single hull;No Notes. Change in text file if necessary.
+19_12_6_10_44_55;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];10000;Sail Band - Single hul;No Notes. Change in text file if necessary.
+19_12_6_11_31_21;[1300.0, 8500.0];[0, 4];[3.0, 3.0];[1001.0, 1001.0];200000;Sail Band - Single hul;bird flock crossing beam W to E clos e in to radar. Low to water surface, angle might not catch too many
+19_12_6_14_18_41;[1300.0, 8500.0];[3, 5];[5.0, 5.0];[1001.0, 1001.0];200000;compression test 0dB;First Long test bistatic, potential large boat crossing beam
+19_12_6_14_23_4;[1300.0, 8500.0];[3, 5];[5.0, 5.0];[1001.0, 1001.0];200000;Bistatic - Angle 22deg;SUPs north of PHXb;  kayakers moving E->W, 
+19_12_6_14_23_4;[1300.0, 8500.0];[3, 5];[5.0, 5.0];[1001.0, 1001.0];200000;Bistatic - Angle 22deg;No Notes. Change in text file if necessary.
+19_12_6_14_23_4;[1300.0, 8500.0];[3, 5];[5.0, 5.0];[1001.0, 1001.0];200000;Bistatic - Angle 22deg;No Notes. Change in text file if necessary.
+19_12_6_14_29_28;[1300.0, 8500.0];[3, 5];[5.0, 5.0];[1001.0, 1001.0];200000;Bistatic - Angle 22deg;poss SuPs
+19_12_6_14_37_41;[1300.0, 8500.0];[3, 5];[5.0, 5.0];[1001.0, 1001.0];200000;Matrice600 Drone - Bistatic - Angle 22deg from RR;approx 2 sec hover at each of 12 waypoints
+19_12_6_14_43_2;[1300.0, 8500.0];[3, 5];[5.0, 5.0];[1001.0, 1001.0];200000;Matrice600 Drone - Bistatic - Angle 22deg from RR;No Notes. Change in text file if necessary.
+19_12_6_14_48_25;[1300.0, 8500.0];[3, 5];[5.0, 5.0];[1001.0, 1001.0];200000;Matrice600 Drone - Bistatic - Angle 22deg from RR;Drone inbound over phoenix buoy, bird assault
+19_12_6_14_57_41;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];2000;Matrice600 Drone - Bistatic - Angle 22deg from RR - 3us;No Notes. Change in text file if necessary.
+19_12_6_14_58_43;[1300.0, 8500.0];[3, 5];[1.0, 1.0];[1001.0, 1001.0];2000;Matrice600 Drone - Bistatic - Angle 22deg from RR - 3us;No Notes. Change in text file if necessary.
+19_12_6_15_15_19;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Matrice600 Drone - Bistatic - Angle 22deg from RR - 3us;Drone outbound
+19_12_6_15_19_59;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Matrice600 Drone - Bistatic - Angle 22deg from RR - 3us;Swappe adc channels
+19_12_6_15_25_18;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Matrice600 Drone - Bistatic - Angle 22deg from RR - 3us - Xchans swapped(1=H,2=V);No Notes. Change in text file if necessary.
+19_12_6_15_33_8;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Matrice600 Drone - Bistatic - Angle 22deg from RR - 3us - Xchans swapped(1=H,2=V);n0 GPSDO trying to lock
+19_12_6_15_38_8;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Matrice600 Drone - Bistatic - Angle 22deg from RR - 3us - Xchans swapped(1=H,2=V);No Notes. Change in text file if necessary.
+19_12_6_15_43_9;[1300.0, 8500.0];[3, 5];[3.0, 3.0];[1001.0, 1001.0];200000;Matrice600 Drone - Bistatic - Angle 22deg from RR - 3us - Xchans swapped(1=H,2=V);2-ship kayak armada

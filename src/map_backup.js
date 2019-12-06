@@ -8,10 +8,10 @@ var redIcon = new L.Icon({
 });
 
 
-var n1 = [-34.1926,18.4456];
+var n1 = [-34.1739,18.4279];
 var n2 = [-34.1926,18.4456];
 var n0 = [-34.1926,18.4456];
-var trgt = [-34.165937, 18.496857];
+var trgt = [-34.1885,18.4506];
 var map = L.map('map').setView([-34.19, 18.45], 13);
 var target = L.marker(trgt,{icon: redIcon}).addTo(map);
 var node0 = L.marker(n0).addTo(map);
