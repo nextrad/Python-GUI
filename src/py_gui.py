@@ -69,7 +69,7 @@ class MainWindow(QtWidgets.QMainWindow):
         config.optionxform = lambda option: option  # preserve case for letters
         config.read(gui_ini)
         self.stdout_result = StringIO()
-
+        self.fav_ini = config.get('Files','target_favs')
         self.nextrad_ini = config.get('Files','nextrad_header')
         self.connections_ini = config.get('Files','connection')
         self.cnc_header_loc = config.get('HeaderDirects','cnc')
@@ -170,7 +170,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.target_details.setText(self.target_latlong)
         self.change_map_style()
         self.experiment_name_edit.setText(self.experiment_name)
-
+        self.add_favourites()
         self.show()
 
         self.timer = QtCore.QTimer(self)
@@ -251,6 +251,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scene_edit = QtWidgets.QLineEdit(self)
         #self.azimuth_rotation = QtWidgets.QLineEdit(self)
         #self.scene_edit.editingFinished.connect(self.enter_scene)
+
+        #DropDown
+        self.fav_drop = QtWidgets.QComboBox(self)
+        self.fav_drop.activated[str].connect(self.to_fav)
 
         #Checkboxes
         self.node_0_disable = QtWidgets.QCheckBox("Node 0",self)
@@ -376,6 +380,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.midbox.addWidget(self.view,1,0,10,3)
         self.midbox.addWidget(self.map_style_button,10,0)
+        self.midbox.addWidget(self.fav_drop,1,2)
 
         self.midbox.addWidget(self.lbl_trgt_latlong,11,0)
         self.midbox.addWidget(self.target_details,11,1)
@@ -457,6 +462,21 @@ class MainWindow(QtWidgets.QMainWindow):
         w = QtWidgets.QWidget()
         w.setLayout(layout)
         self.setCentralWidget(w)
+
+    def add_favourites(self):
+        config = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
+        config.optionxform = lambda option: option  # preserve case for letters
+        config.read(self.fav_ini)
+        for item in config.items('Targets'):
+            self.fav_drop.addItem(item[0])
+
+    def to_fav(self, text):
+        config = configparser.ConfigParser(comment_prefixes='/', allow_no_value=True)
+        config.optionxform = lambda option: option  # preserve case for letters
+        config.read(self.fav_ini)
+        self.target_latlong = config['Targets'][text]
+        self.target_details.setText(self.target_latlong) 
+        self.update_map('var trgt = ','var trgt = [' + self.target_latlong + '];\n')
 
     def update_quickview_ims(self):
 
@@ -541,7 +561,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.n2ch2.setPixmap(pixmap)
         #self.resize(pixmap.width(), pixmap.height())
 
-        
+
         # #Layout Setup
 
     def init_nextheader_values(self):
